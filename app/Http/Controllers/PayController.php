@@ -13,15 +13,28 @@ class PayController extends Controller
 {
     public function createPaymentLink(Request $request)
     {
-        $info = [
-            'name' => $request->input('hoten'),
-            'address' => $request->input('diachi'),
-            'phone' => $request->input('dienthoai'),
-            'email' => $request->input('email'),
-            'total' => $request->input('tongtien'),
-        ];
+        $bill = new Bill();
+        $bill->user_id = Auth::id();
+        $bill->name = $request->input('hoten');
+        $bill->address = $request->input('diachi');
+        $bill->phone = $request->input('dienthoai');
+        $bill->email = $request->input('email');
+        $bill->order_date = now();
+        $bill->total = $request->input('tongtien');
+        $bill->status = '0';
+        $bill->save();
 
-        session()->put('info', $info);
+        $cart = session()->get('cart', []);
+
+        foreach ($cart as $key => $product) {
+            $cartItem = new Cart();
+            $cartItem->bill_id = $bill->id;
+            $cartItem->product_id = $key;
+            $cartItem->quantity = $product['quantity'];
+            $cartItem->unit_price = $product['unit_price'];
+            $cartItem->total_price = $product['total_price'];
+            $cartItem->save();
+        }
 
         $payOS = new PayOS(
             env("PAYOS_CLIENT_ID"),
@@ -31,7 +44,7 @@ class PayController extends Controller
         $YOUR_DOMAIN = env("APP_URL");
 
         $data = [
-            "orderCode" => intval(substr(strval(microtime(true) * 10000), -6)),
+            "orderCode" => $bill->id,
             "amount" => floatval($request->input('tongtien')),
             "description" => "Thanh toán đơn hàng",
             "returnUrl" => $YOUR_DOMAIN . "/requestpayment",
@@ -46,35 +59,8 @@ class PayController extends Controller
     public function requestpayment(Request $request)
     {
         if ($request->has('status') == 'PAID') {
-            
-            $info = session()->get('info', []);
-            $cart = session()->get('cart', []);
 
-            $bill = new Bill();
-            $bill->id_payment = $request->has('orderCode');
-            $bill->user_id = Auth::id();
-            $bill->name = $info['name'];
-            $bill->address = $info['address'];
-            $bill->phone = $info['phone'];
-            $bill->email = $info['email'];
-            $bill->order_date = now();
-            $bill->total = $info['total'];
-            $bill->status = '1';
-            $bill->save();
-
-            // Lưu chi tiết giỏ hàng vào bảng Cart
-            foreach ($cart as $key => $product) {
-                $cartItem = new Cart();
-                $cartItem->bill_id = $bill->id;
-                $cartItem->product_id = $key;
-                $cartItem->quantity = $product['quantity'];
-                $cartItem->unit_price = $product['unit_price'];
-                $cartItem->total_price = $product['total_price'];
-                $cartItem->save();
-            }
-
-            session()->forget('info');
-            session()->forget('cart');
+            Bill::where('id', $request->has('orderCode'))->update(['status' => 1]);
 
             return redirect('/orders')->with('success', 'Đặt hàng thành công!');
         }elseif ($request->has('cancel')) {

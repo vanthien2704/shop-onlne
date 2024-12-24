@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Model;
  * Class Bill
  * 
  * @property int $id
- * @property int $id_payment
  * @property string $name
  * @property string $address
  * @property string $phone
@@ -36,7 +35,6 @@ class Bill extends Model
 	protected $table = 'bills';
 
 	protected $casts = [
-		'id_payment' => 'int',
 		'order_date' => 'datetime',
 		'total' => 'int',
 		'user_id' => 'int',
@@ -44,7 +42,6 @@ class Bill extends Model
 	];
 
 	protected $fillable = [
-		'id_payment',
 		'name',
 		'address',
 		'phone',

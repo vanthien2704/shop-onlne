@@ -25,7 +25,7 @@
                             <td>
                                 @switch($bill->status)
                                     @case(0)
-                                        Đơn hàng đã bị hủy
+                                        Chưa thanh thoán
                                         @break
                                     @case(1)
                                         Đã thanh toán

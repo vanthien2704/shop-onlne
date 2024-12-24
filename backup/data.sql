@@ -47,7 +47,6 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 CREATE TABLE IF NOT EXISTS `bills` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `id_payment` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
   `address` varchar(255) NOT NULL,
   `phone` varchar(12) NOT NULL,

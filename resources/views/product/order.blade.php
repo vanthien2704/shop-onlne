@@ -154,7 +154,7 @@
                                 <p class='info-product__heading-status'>
                                     @switch($order->status)
                                         @case(0)
-                                            Đơn hàng đã bị hủy
+                                            Chưa thanh thoán
                                             @break
                                         @case(1)
                                             Đã thanh toán
