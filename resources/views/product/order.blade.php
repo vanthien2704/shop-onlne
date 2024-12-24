@@ -154,7 +154,7 @@
                                 <p class='info-product__heading-status'>
                                     @switch($order->status)
                                         @case(0)
-                                            Chưa thanh thoán
+                                            Chưa thanh toán
                                             @break
                                         @case(1)
                                             Đã thanh toán
@@ -183,12 +183,13 @@
                                 <div class='info-product__table-footer'>
                                     <p class='info-product__footer-top'>Thành Tiền: <span class='info-product__footer-top-money'>{{ Number::format($order->total) }} đ</span></p>
                                     <div class='info-product__footer-bottom'>
-                                        <form method="post" action="{{ url('/cancelorder') }}" class='info-product__footer-right'>
+                                        <form method="post" action="{{ url('/paynow') }}" class='info-product__footer-right'>
                                             @csrf
                                             <a href="{{ url('contact') }}" class='info-product__footer-cancel'>Liên hệ người bán</a>
-                                            <input type="hidden" name="order_id" value="{{ $order->id }}">
-                                            @if ($order->status == 1)
-                                                <button type="submit" class="info-product__footer-cancel" name="cancel_order">Hủy đơn hàng</button>
+                                            <input type="hidden" name="id" value="{{ $order->id }}">
+                                            <input type="hidden" name="total" value="{{ $order->total }}">
+                                            @if ($order->status == 0)
+                                                <button type="submit" class="info-product__footer-cancel" name="cancel_order">Thanh toán ngay</button>
                                             @endif
                                         </form>
                                     </div>

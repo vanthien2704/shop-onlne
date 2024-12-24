@@ -46,12 +46,14 @@ class PayController extends Controller
         $data = [
             "orderCode" => $bill->id,
             "amount" => floatval($request->input('tongtien')),
-            "description" => "Thanh toán đơn hàng",
+            "description" => "Thanh toán mã đơn hàng $bill->id",
             "returnUrl" => $YOUR_DOMAIN . "/requestpayment",
             "cancelUrl" => $YOUR_DOMAIN . "/requestpayment"
         ];
 
         $response = $payOS->createPaymentLink($data);
+
+        Bill::where('id', $bill->id)->update(['url_payment' => $response['checkoutUrl']]);
 
         return redirect($response['checkoutUrl']);
     }
@@ -68,5 +70,14 @@ class PayController extends Controller
         }else{
             return redirect('/cart')->with('error', 'Đặt hàng không thành công!');
         }
+    }
+
+    public function paynow(Request $request)
+    {
+        $orderId = intval($request->input('id'));
+        $bill = Bill::where('id', $orderId)->first();
+        dd($bill->url_payment);
+        
+        return redirect($bill->url_payment);
     }
 }

@@ -41,8 +41,6 @@ Route::post('/writecontact', [ProductController::class, 'writecontact']);
 Route::post('/search', [SearchController::class, 'search']);
 
 Route::middleware(['auth'])->group(function(){
-    Route::post('/cancelorder', [ProductController::class, 'cancelorder']);
-    Route::post('/bill', [ProductController::class, 'addbill']);
     Route::get('/removecart/{id}', [ProductController::class, 'removeFromCart']);
     Route::get('/orders', [ProductController::class, 'vieworder']);
     Route::get('/removecartall', [ProductController::class, 'clearCart']);
@@ -51,6 +49,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/logout', [AuthController::class, 'logout']);
 
     Route::post('/payment', [PayController::class, 'createPaymentLink']);
+    Route::post('/paynow', [PayController::class, 'paynow']);
     Route::get('/requestpayment', [PayController::class, 'requestpayment']);
 });
 

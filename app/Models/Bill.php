@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $total
  * @property int $user_id
  * @property int $status
+ * @property string $url_payment
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * 
@@ -49,7 +50,8 @@ class Bill extends Model
 		'order_date',
 		'total',
 		'user_id',
-		'status'
+		'status',
+		'url_payment'
 	];
 
 	public function user()

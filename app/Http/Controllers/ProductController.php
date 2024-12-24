@@ -81,44 +81,4 @@ class ProductController extends Controller
         // dd($orders);
         return view('product.order', compact('orders'));
     }
-
-    public function addbill(Request $request)
-    {
-        $user_id = Auth::id();
-        $cart = session()->get('cart', []);
-
-        // Tạo đơn hàng mới
-        $bill = new Bill();
-        $bill->user_id = $user_id;
-        $bill->name = $request->input('hoten');
-        $bill->address = $request->input('diachi');
-        $bill->phone = $request->input('dienthoai');
-        $bill->email = $request->input('email');
-        $bill->order_date = now();
-        $bill->total = $request->input('tongtien');
-        $bill->status = '1';
-        $bill->save();
-
-        // Lưu chi tiết giỏ hàng vào bảng Cart
-        foreach ($cart as $key => $product) {
-            $cartItem = new Cart();
-            $cartItem->bill_id = $bill->id;
-            $cartItem->product_id = $key;
-            $cartItem->quantity = $product['quantity'];
-            $cartItem->unit_price = $product['unit_price'];
-            $cartItem->total_price = $product['total_price'];
-            $cartItem->save();
-        }
-
-        session()->forget('cart');
-        
-        return redirect('/orders')->with('success', 'Đặt hàng thành công!');
-    }
-
-    public function cancelorder(Request $request)
-    {
-        $orderid = $request->input('order_id');
-        Bill::where('id', $orderid)->update(['status' => 0]);
-        return redirect()->back()->with('success', 'Đã hủy bỏ đơn hàng!');
-    }
 }
