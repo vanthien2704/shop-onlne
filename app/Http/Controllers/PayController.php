@@ -36,6 +36,8 @@ class PayController extends Controller
             $cartItem->save();
         }
 
+        session()->forget('cart');
+
         $payOS = new PayOS(
             env("PAYOS_CLIENT_ID"),
             env("PAYOS_SECRET"),
@@ -53,20 +55,18 @@ class PayController extends Controller
 
         $response = $payOS->createPaymentLink($data);
 
-        Bill::where('id', $bill->id)->update(['url_payment' => $response['checkoutUrl']]);
-
         return redirect($response['checkoutUrl']);
     }
 
     public function requestpayment(Request $request)
     {
-        if ($request->has('status') == 'PAID') {
+        if ($request->input('status') == 'PAID') {
 
-            Bill::where('id', $request->has('orderCode'))->update(['status' => 1]);
+            Bill::where('id', $request->input('orderCode'))->update(['status' => 1]);
 
             return redirect('/orders')->with('success', 'Đặt hàng thành công!');
-        }elseif ($request->has('cancel')) {
-            return redirect('/cart')->with('error', 'Đã hủy thanh toán!');
+        }elseif ($request->input('cancel')) {
+            return redirect('/orders')->with('error', 'Đã hủy thanh toán!');
         }else{
             return redirect('/cart')->with('error', 'Đặt hàng không thành công!');
         }
@@ -74,10 +74,43 @@ class PayController extends Controller
 
     public function paynow(Request $request)
     {
-        $orderId = intval($request->input('id'));
+        $orderId = $request->input('id');
         $bill = Bill::where('id', $orderId)->first();
-        dd($bill->url_payment);
-        
-        return redirect($bill->url_payment);
+
+        $payOS = new PayOS(
+            env("PAYOS_CLIENT_ID"),
+            env("PAYOS_SECRET"),
+            env("PAYOS_API_KEY")
+        );
+        $YOUR_DOMAIN = env("APP_URL");
+
+        $data = [
+            "orderCode" => floatval(time().$orderId),
+            "amount" => $bill->total,
+            "description" => "Thanh toán mã đơn hàng $orderId",
+            "returnUrl" => $YOUR_DOMAIN . "/requestpaymentnow",
+            "cancelUrl" => $YOUR_DOMAIN . "/requestpaymentnow"
+        ];
+
+        $response = $payOS->createPaymentLink($data);
+
+        return redirect($response['checkoutUrl']);
+    }
+
+    public function requestpaymentnow(Request $request)
+    {
+        if ($request->input('status') == 'PAID') {
+
+            $orderId = $request->input('orderCode');
+            $id = substr($orderId, -2);
+
+            Bill::where('id', $id)->update(['status' => 1]);
+
+            return redirect('/orders')->with('success', 'Đặt hàng thành công!');
+        }elseif ($request->input('cancel')) {
+            return redirect('/orders')->with('error', 'Đã hủy thanh toán!');
+        }else{
+            return redirect('/cart')->with('error', 'Đặt hàng không thành công!');
+        }
     }
 }

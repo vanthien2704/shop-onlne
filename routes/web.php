@@ -51,6 +51,7 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/payment', [PayController::class, 'createPaymentLink']);
     Route::post('/paynow', [PayController::class, 'paynow']);
     Route::get('/requestpayment', [PayController::class, 'requestpayment']);
+    Route::get('/requestpaymentnow', [PayController::class, 'requestpaymentnow']);
 });
 
 Route::middleware(['auth', App\Http\Middleware\AdminAuth::class])->group(function(){
