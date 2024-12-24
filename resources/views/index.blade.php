@@ -1,0 +1,5 @@
+@include('partial_user.headernguoidung')
+@include('partial_user.main1')
+@include('partial_user.main2')
+@include('partial_user.main3')
+@include('partial_user.footernguoidung')
