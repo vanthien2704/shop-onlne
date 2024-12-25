@@ -95,6 +95,8 @@
     </div>
 </div>
 
+<div style="padding: 30px;"></div>
+
 <script>
     document.querySelectorAll('.detail-items__quantity-num').forEach(function(inputElement) {
         inputElement.addEventListener('change', function() {

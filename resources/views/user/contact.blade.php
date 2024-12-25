@@ -57,4 +57,5 @@
         </div>
     </div>
 </div>
+<div style="padding: 30px;"></div>
 @include('partial_user.footernguoidung')

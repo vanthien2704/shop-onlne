@@ -196,11 +196,6 @@
             <div class="relog-form__gr">
                 <input type="password" class="relog-form__gr-input" placeholder="Mật khẩu" name="password" required>
             </div>
-            {{-- @if(session('error'))
-                <div class="relog-form__title" style="color: red;">
-                    {{ session('error') }}
-                </div>
-            @endif --}}
         </div>
         <div class="relog-form__btn">
             <input class="relog-form__btn-link" type="submit" value="Đăng nhập" name='ok'>

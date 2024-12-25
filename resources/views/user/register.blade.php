@@ -82,6 +82,7 @@
         .relog-form__gr {
             display: flex;
             margin: 16px 0;
+            flex-direction: column;
         }
 
         .relog-form__gr-input {
@@ -191,28 +192,28 @@
             <p class="relog-form__title">Đã có tài khoản, đăng nhập <a href="/login" class="relog-form__link"> tại đây</a></p>
             <div class="relog-form__info">
                 <div class="relog-form__gr">
-                    <input type="text" name="tendangnhap" class="relog-form__gr-input" placeholder="Tên đăng nhập" required value="{{ old('tendangnhap') }}">
-                    @error('tendangnhap')<div class="text-danger">{{ $message }}</div>@enderror
+                    <input type="text" name="username" class="relog-form__gr-input" placeholder="Tên đăng nhập" required value="{{ old('username') }}">
+                    @error('username')<div class="text-danger" style="color: red; font-size: 12px; margin-top: 5px;">{{ $message }}</div>@enderror
                 </div>
                 <div class="relog-form__gr">
-                    <input type="password" name="matkhau" class="relog-form__gr-input" placeholder="Mật khẩu" required>
-                    @error('matkhau')<div class="text-danger">{{ $message }}</div>@enderror
+                    <input type="password" name="password" class="relog-form__gr-input" placeholder="Mật khẩu" required>
+                    @error('password')<div class="text-danger" style="color: red; font-size: 12px; margin-top: 5px;">{{ $message }}</div>@enderror
                 </div>
                 <div class="relog-form__gr">
-                    <input type="text" name="hoten" class="relog-form__gr-input" placeholder="Họ tên" required value="{{ old('hoten') }}">
-                    @error('hoten')<div class="text-danger">{{ $message }}</div>@enderror
+                    <input type="text" name="fullname" class="relog-form__gr-input" placeholder="Họ tên" required value="{{ old('fullname') }}">
+                    @error('fullname')<div class="text-danger" style="color: red; font-size: 12px; margin-top: 5px;">{{ $message }}</div>@enderror
                 </div>
                 <div class="relog-form__gr">
-                    <input type="text" name="sdt" class="relog-form__gr-input" placeholder="Số điện thoại" required value="{{ old('sdt') }}">
-                    @error('sdt')<div class="text-danger">{{ $message }}</div>@enderror
+                    <input type="text" name="phone" class="relog-form__gr-input" placeholder="Số điện thoại" required value="{{ old('phone') }}">
+                    @error('phone')<div class="text-danger" style="color: red; font-size: 12px; margin-top: 5px;">{{ $message }}</div>@enderror
                 </div>
                 <div class="relog-form__gr">
                     <input type="text" name="email" class="relog-form__gr-input" placeholder="Email" required value="{{ old('email') }}">
-                    @error('email')<div class="text-danger">{{ $message }}</div>@enderror
+                    @error('email')<div class="text-danger" style="color: red; font-size: 12px; margin-top: 5px;">{{ $message }}</div>@enderror
                 </div>
                 <div class="relog-form__gr">
-                    <input type="text" name="diachi" class="relog-form__gr-input" placeholder="Địa chỉ" required value="{{ old('diachi') }}">
-                    @error('diachi')<div class="text-danger">{{ $message }}</div>@enderror
+                    <input type="text" name="address" class="relog-form__gr-input" placeholder="Địa chỉ" required value="{{ old('address') }}">
+                    @error('address')<div class="text-danger" style="color: red; font-size: 12px; margin-top: 5px;">{{ $message }}</div>@enderror
                 </div>
             </div>   
             <div class="relog-form__btn">

@@ -147,10 +147,3 @@ INSERT INTO `products` (`id`, `group_id`, `product_name`, `description`, `quanti
 
 INSERT INTO `users` (`id`, `username`, `fullname`, `phone`, `email`, `password`, `address`, `role`, `enable`, `created_at`, `updated_at`) VALUES
 	(1, 'thien', 'Thien2', '0123456', 'thien@gmail.com', '$2y$12$0E6zh0WyHamL4BEamphLzuwc8eHCG/J84POiegacoUwBrxjN0XJ2O', 'phu yen', 'admin', 1, '2024-12-04 05:01:01', '2024-12-06 07:12:01');
-
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
-	(1, '0001_01_01_000000_create_users_table', 1),
-	(2, '0001_01_01_000001_create_cache_table', 1),
-	(3, '2024_12_03_080825_products', 1),
-	(4, '2024_12_03_081717_bill', 1),
-	(5, '2024_12_03_082138_news', 1);

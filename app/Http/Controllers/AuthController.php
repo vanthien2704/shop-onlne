@@ -35,21 +35,21 @@ class AuthController extends Controller
     public function register(Request $request) {
         // Kiểm tra dữ liệu đầu vào trực tiếp
         $validated = $request->validate([
-            'tendangnhap' => 'required|string|max:255|unique:users,username',
-            'matkhau' => 'required|string|min:3',
-            'hoten' => 'required|string|max:255',
-            'sdt' => 'required|string|max:15',
+            'username' => 'required|string|max:255|unique:users,username',
+            'password' => 'required|string|min:3',
+            'fullname' => 'required|string|max:255',
+            'phone' => 'required|string|max:15',
             'email' => 'required|string|email|max:255|unique:users,email',
-            'diachi' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
         ]);
 
         User::create([
-            'username' => $validated['tendangnhap'],
-            'password' => Hash::make($validated['matkhau']),
-            'fullname' => $validated['hoten'],
-            'phone' => $validated['sdt'],
+            'username' => $validated['username'],
+            'password' => Hash::make($validated['password']),
+            'fullname' => $validated['fullname'],
+            'phone' => $validated['phone'],
             'email' => $validated['email'],
-            'address' => $validated['diachi'],
+            'address' => $validated['address'],
         ]);
 
         return redirect('/login')->with('success', 'Đăng ký thành công!');
