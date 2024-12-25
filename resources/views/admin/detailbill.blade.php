@@ -48,13 +48,17 @@
                 value="{{ $bill->id }}" required >
         <div class="form-group">
             <label for="quyen">Trạng thái đơn hàng:</label>
-            <select class="form-control" name="status">
-                <option value="0" {{ $bill->status == '0' ? 'selected' : '' }}>Đơn hàng đã bị hủy</option>
+            <select class="form-control" name="status" @if ($bill->status == 2) disabled @endif>
+                <option value="0" {{ $bill->status == '0' ? 'selected' : '' }}>Chưa thanh toán</option>
                 <option value="1" {{ $bill->status == '1' ? 'selected' : '' }}>Đã thanh toán</option>
-                <option value="2" {{ $bill->status == '2' ? 'selected' : '' }}> Đơn hàng đã giao</option>
+                <option value="2" {{ $bill->status == '2' ? 'selected' : '' }}>Đơn hàng đã giao</option>
+                <option value="3" {{ $bill->status == '3' ? 'selected' : '' }}>Đơn hàng đã bị hủy</option>
             </select>
         </div>
     
         <button type="submit" class="btn btn-primary" name="ok">Cập nhật</button>
+        @if ($bill->status != 2)
+            <a href="{{ url('/admin/bills/sendbill', $bill->id) }}" class="btn btn-primary">Giao hàng</a>
+        @endif
     </form>
 </div>

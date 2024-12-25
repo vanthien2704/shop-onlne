@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS `product_groups` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `products` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS `products` (
   PRIMARY KEY (`id`) USING BTREE,
   KEY `FK_products_product_groups` (`group_id`),
   CONSTRAINT `FK_products_product_groups` FOREIGN KEY (`group_id`) REFERENCES `product_groups` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `users` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `users_email_unique` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `bills` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS `bills` (
   PRIMARY KEY (`id`),
   KEY `FK_bills_users` (`user_id`),
   CONSTRAINT `FK_bills_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `cache` (
   `key` varchar(255) NOT NULL,
@@ -90,7 +90,7 @@ CREATE TABLE IF NOT EXISTS `cart` (
   KEY `FK_cart_products` (`product_id`),
   CONSTRAINT `FK_cart_products` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`),
   CONSTRAINT `cart_bill_id_foreign` FOREIGN KEY (`bill_id`) REFERENCES `bills` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `contacts` (
   `fullname` varchar(30) NOT NULL,
@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS `migrations` (
   `migration` varchar(255) NOT NULL,
   `batch` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `sessions` (
   `id` varchar(255) NOT NULL,
@@ -143,7 +143,7 @@ INSERT INTO `products` (`id`, `group_id`, `product_name`, `description`, `quanti
 	(14, 4, 'BALO NEYMARSPORT FOOTBALL BACKPACK 2024', 'Nhà cung cấp: NEYMARSPORT\r\n\r\nSKU: NMSBA24-BL', 10, 249, 249, 'balo1.png', 1, ' ', '2024-12-02 23:24:44', '2024-12-02 23:24:57'),
 	(15, 3, 'GĂNG TAY THỦ MÔN NIKE GOALKEEPER GLOVES MATCH MAD BRILLIANCE - BLACK/SUNSET PULSE FJ4862-014', 'Nhà cung cấp: NIKE\r\n\r\nSKU: FJ4862-014-6', 10, 809000, 809000, 'gang1.png', 1, ' ', '2024-12-02 23:24:46', '2024-12-02 23:24:57'),
 	(16, 3, 'GĂNG TAY THỦ MÔN ADIDAS GOALKEEPER GLOVES PREDATOR TRAINING MARINERUSH - BRIGHT ROYAL/WHITE', 'Nhà cung cấp: ADIDAS\r\n\r\nSKU: IA0876-7', 10, 790000, 790000, 'gang2.png', 1, ' ', '2024-12-02 23:24:46', '2024-12-02 23:24:58'),
-	(17, 4, 'TÚI GYMSACK KAMITO TA11 WONCUP', 'Nhà cung cấp: KAMITO\r\n\r\nSKU: KMPTUI220140', 9, 31500, 31500, '064d1a5e47124d2a.png', 1, ' ', '2024-12-02 23:24:47', '2024-12-02 23:24:58');
+	(17, 4, 'TÚI GYMSACK KAMITO TA11 WONCUP', 'Nhà cung cấp: KAMITO\r\n\r\nSKU: KMPTUI220140', 9, 2000, 31500, '064d1a5e47124d2a.png', 1, ' ', '2024-12-02 23:24:47', '2024-12-02 23:24:58');
 
 INSERT INTO `users` (`id`, `username`, `fullname`, `phone`, `email`, `password`, `address`, `role`, `enable`, `created_at`, `updated_at`) VALUES
 	(1, 'thien', 'Thien2', '0123456', 'thien@gmail.com', '$2y$12$0E6zh0WyHamL4BEamphLzuwc8eHCG/J84POiegacoUwBrxjN0XJ2O', 'phu yen', 'admin', 1, '2024-12-04 05:01:01', '2024-12-06 07:12:01');

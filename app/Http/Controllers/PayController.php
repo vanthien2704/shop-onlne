@@ -45,10 +45,12 @@ class PayController extends Controller
         );
         $YOUR_DOMAIN = env("APP_URL");
 
+        $orderCode = floatval(time().$bill->id);
+
         $data = [
-            "orderCode" => $bill->id,
+            "orderCode" => $orderCode,
             "amount" => floatval($request->input('tongtien')),
-            "description" => "Thanh toán mã đơn hàng $bill->id",
+            "description" => "Thanh toan ma don hang $bill->id",
             "returnUrl" => $YOUR_DOMAIN . "/requestpayment",
             "cancelUrl" => $YOUR_DOMAIN . "/requestpayment"
         ];
@@ -56,20 +58,6 @@ class PayController extends Controller
         $response = $payOS->createPaymentLink($data);
 
         return redirect($response['checkoutUrl']);
-    }
-
-    public function requestpayment(Request $request)
-    {
-        if ($request->input('status') == 'PAID') {
-
-            Bill::where('id', $request->input('orderCode'))->update(['status' => 1]);
-
-            return redirect('/orders')->with('success', 'Đặt hàng thành công!');
-        }elseif ($request->input('cancel')) {
-            return redirect('/orders')->with('error', 'Đã hủy thanh toán!');
-        }else{
-            return redirect('/cart')->with('error', 'Đặt hàng không thành công!');
-        }
     }
 
     public function paynow(Request $request)
@@ -84,12 +72,14 @@ class PayController extends Controller
         );
         $YOUR_DOMAIN = env("APP_URL");
 
+        $orderCode = floatval(time().$orderId);
+
         $data = [
-            "orderCode" => floatval(time().$orderId),
+            "orderCode" => $orderCode,
             "amount" => $bill->total,
-            "description" => "Thanh toán mã đơn hàng $orderId",
-            "returnUrl" => $YOUR_DOMAIN . "/requestpaymentnow",
-            "cancelUrl" => $YOUR_DOMAIN . "/requestpaymentnow"
+            "description" => "Thanh toan ma don hang $orderId",
+            "returnUrl" => $YOUR_DOMAIN . "/requestpayment",
+            "cancelUrl" => $YOUR_DOMAIN . "/requestpayment"
         ];
 
         $response = $payOS->createPaymentLink($data);
@@ -97,7 +87,7 @@ class PayController extends Controller
         return redirect($response['checkoutUrl']);
     }
 
-    public function requestpaymentnow(Request $request)
+    public function requestpayment(Request $request)
     {
         if ($request->input('status') == 'PAID') {
 

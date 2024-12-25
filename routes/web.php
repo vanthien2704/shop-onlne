@@ -45,13 +45,13 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/orders', [ProductController::class, 'vieworder']);
     Route::get('/removecartall', [ProductController::class, 'clearCart']);
     Route::post('/addtocart', [ProductController::class, 'addToCart']);
+    Route::post('/updatecart', [ProductController::class, 'updateCart']);
     Route::get('/cart', [ProductController::class, 'viewCart']);
     Route::get('/logout', [AuthController::class, 'logout']);
 
     Route::post('/payment', [PayController::class, 'createPaymentLink']);
     Route::post('/paynow', [PayController::class, 'paynow']);
     Route::get('/requestpayment', [PayController::class, 'requestpayment']);
-    Route::get('/requestpaymentnow', [PayController::class, 'requestpaymentnow']);
 });
 
 Route::middleware(['auth', App\Http\Middleware\AdminAuth::class])->group(function(){
@@ -81,4 +81,7 @@ Route::middleware(['auth', App\Http\Middleware\AdminAuth::class])->group(functio
     Route::get('/admin/bills', [AdminController::class, 'bills']);
     Route::get('/admin/bills/detail/{id}', [AdminController::class, 'detailbill']);
     Route::post('/admin/bills/edit', [AdminController::class, 'updatebill']);
+
+    Route::get('/admin/bills/sendbill/{id}', [AdminController::class, 'sendbill']);
+
 });

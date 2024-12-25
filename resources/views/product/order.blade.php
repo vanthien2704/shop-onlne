@@ -154,13 +154,16 @@
                                 <p class='info-product__heading-status'>
                                     @switch($order->status)
                                         @case(0)
-                                            Chưa thanh toán
+                                            Chưa thanh thoán
                                             @break
                                         @case(1)
                                             Đã thanh toán
                                             @break
-                                        @default
+                                        @case(2)
                                             Đơn hàng đã giao
+                                            @break
+                                        @default
+                                            Đơn hàng đã bị hủy
                                     @endswitch
                                 </p>
                             </div>
@@ -203,5 +206,6 @@
     </div>
 </div>
 
+<div style="padding: 30px;"></div>
 
 @include('partial_user.footernguoidung')

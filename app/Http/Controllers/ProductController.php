@@ -78,7 +78,22 @@ class ProductController extends Controller
     {
         $user_id = Auth::id();
         $orders = Bill::where('user_id', $user_id)->with('carts.product')->orderBy('id', 'desc')->paginate(10);
-        // dd($orders);
         return view('product.order', compact('orders'));
+    }
+
+    public function updateCart(Request $request)
+    {
+        $key = $request->input('key');
+        $quantity = $request->input('quantity');
+
+        $cart = session()->get('cart', []);
+
+        if (isset($cart[$key])) {
+            $cart[$key]['quantity'] = $quantity;
+            session()->put('cart', $cart);
+            return response()->json(['success' => true, 'message' => 'Cập nhật thành công!']);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Sản phẩm không tồn tại']);
     }
 }

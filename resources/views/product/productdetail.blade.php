@@ -33,6 +33,9 @@
                         </div>
                     </div>
                     <div class="detail-items__warehouse">
+                        <p class="detail-items__warehouse-remaining"><strong>{{ $product->description }}</strong></p>
+                    </div>
+                    <div class="detail-items__warehouse">
                         <p class="detail-items__warehouse-remaining"><strong>Kho hàng còn</strong>: {{ $product->quantity }} cái</p>
                     </div>
                     <form action="{{ url('/addtocart') }}" method="post" class="detail-items__quantity">
@@ -89,5 +92,7 @@
         </div>
     </div>
 </div>
+
+<div style="padding: 30px;"></div>
 
 @include('partial_user.footernguoidung')

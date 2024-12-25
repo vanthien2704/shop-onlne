@@ -287,4 +287,17 @@ class AdminController extends Controller
             return redirect()->back()->with('error', 'Cập nhật thất bại');
         }
     }
+
+    public function sendbill($id)
+    {
+        $detailbill = Cart::where('bill_id', $id)->get();
+
+        Bill::where('id', $id)->update(['status' => 2]);
+
+        foreach ($detailbill as $product) {
+            Product::where('id', $product->product_id)->decrement('quantity', $product->quantity);
+        }
+
+        return redirect('/admin/bills')->with('success', 'Đơn hàng đã được gửi đi!');
+    }
 }

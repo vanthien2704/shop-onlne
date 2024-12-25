@@ -30,8 +30,11 @@
                                     @case(1)
                                         Đã thanh toán
                                         @break
-                                    @default
+                                    @case(2)
                                         Đơn hàng đã giao
+                                        @break
+                                    @default
+                                        Đơn hàng đã bị hủy
                                 @endswitch
                             </td>
                             <td>
