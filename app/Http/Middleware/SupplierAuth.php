@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class AdminAuth
+class SupplierAuth
 {
     /**
      * Handle an incoming request.
@@ -15,7 +15,8 @@ class AdminAuth
      */
     public function handle(Request $request, Closure $next): Response
     {
-        abort_if(auth('web')->user()->role != '3', 401);
+        abort_if(auth('web')->user()->role != '2', 401);
         return $next($request);
     }
 }
+// nhà cung cấp

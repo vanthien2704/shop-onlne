@@ -85,3 +85,7 @@ Route::middleware(['auth', App\Http\Middleware\AdminAuth::class])->group(functio
     Route::get('/admin/bills/sendbill/{id}', [AdminController::class, 'sendbill']);
 
 });
+
+Route::middleware(['auth', App\Http\Middleware\SupplierAuth::class])->group(function(){
+    Route::get('/admin', [AdminController::class, 'admin']);
+});
