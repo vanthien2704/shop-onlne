@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Bill;
-use App\Models\Cart;
+use App\Models\Order;
+use App\Models\OrderDetail;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\ProductGroup;
@@ -15,7 +15,7 @@ class AdminController extends Controller
     //
     public function admin()
     {
-        $revenue = Bill::selectRaw("
+        $revenue = Order::selectRaw("
             SUM(CASE WHEN DATE(order_date) = CURDATE() THEN total ELSE 0 END) AS doanh_thu_ngay_hien_tai,
             SUM(CASE WHEN YEAR(order_date) = YEAR(CURDATE()) AND WEEK(order_date) = WEEK(CURDATE()) THEN total ELSE 0 END) AS doanh_thu_tuan_hien_tai,
             SUM(CASE WHEN YEAR(order_date) = YEAR(CURDATE()) THEN total ELSE 0 END) AS doanh_thu_nam_hien_tai,
@@ -34,9 +34,9 @@ class AdminController extends Controller
             SUM(CASE WHEN MONTH(order_date) = 12 THEN total ELSE 0 END) AS doanh_thu_thang_12
         ")->first();
 
-        $sumbill = Bill::count();
+        $sumbill = Order::count();
 
-        $sumproduct = Cart::sum('quantity');
+        $sumproduct = OrderDetail::sum('quantity');
 
         return view('admin.admin', compact('revenue', 'sumbill', 'sumproduct'));
     }
@@ -262,13 +262,13 @@ class AdminController extends Controller
 
     public function bills()
     {
-        $bills = Bill::with('user')->orderBy('id', 'desc')->paginate(10);
+        $bills = Order::with('user')->orderBy('id', 'desc')->paginate(10);
         return view('admin.bills', compact('bills'));
     }
 
     public function detailbill($id)
     {
-        $bill = Bill::where('id', $id)->with('carts.product')->first();
+        $bill = Order::where('id', $id)->with('carts.product')->first();
 
         return view('admin.detailbill', compact('bill'));
     }
@@ -279,7 +279,7 @@ class AdminController extends Controller
 
         $data = ['status' => $status];
 
-        $update = Bill::where('id', $id)->update($data);
+        $update = Order::where('id', $id)->update($data);
 
         if ($update) {
             return redirect('/admin/bills')->with('success', 'Cập nhập thành công!');
@@ -290,9 +290,9 @@ class AdminController extends Controller
 
     public function sendbill($id)
     {
-        $detailbill = Cart::where('bill_id', $id)->get();
+        $detailbill = OrderDetail::where('bill_id', $id)->get();
 
-        Bill::where('id', $id)->update(['status' => 2]);
+        Order::where('id', $id)->update(['status' => 2]);
 
         foreach ($detailbill as $product) {
             Product::where('id', $product->product_id)->decrement('quantity', $product->quantity);

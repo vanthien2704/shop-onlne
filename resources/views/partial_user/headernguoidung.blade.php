@@ -420,7 +420,7 @@
                                             <span title="Thông tin" class="header-top__join-in">{{ Auth::user()->fullname }}</span>
                                             <ul class="header-top__join-menu">
                                                 <li class="header-top__join-menu-items">
-                                                    <a class="header-top__join-out" href="{{ url('/orders') }}">Trang nhà cung cấp</a>
+                                                    <a class="header-top__join-out" href="{{ url('/supplier') }}">Trang nhà cung cấp</a>
                                                 </li>
                                                 <li class="header-top__join-menu-items">
                                                     <a class="header-top__join-out" href="{{ url('/orders') }}">Đơn hàng</a>
@@ -501,8 +501,6 @@
                                         
                                     </div>
                                 </li>
-                                {{-- <li class="header-bottom__items"><a href="index_news.php" class="header-bottom__items-link">Tin tức</a></li> --}}
-                                <li class="header-bottom__items"><a href="{{ url('/contact') }}" class="header-bottom__items-link">Liên hệ</a></li>
                             </ul>
                             <div class="header-bottom__call">
                                 <span class="header-bottom__call-msg">

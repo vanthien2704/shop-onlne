@@ -15,7 +15,7 @@ class AdminAuth
      */
     public function handle(Request $request, Closure $next): Response
     {
-        abort_if(auth('web')->user()->role != '3', 401);
+        abort_if(auth('web')->user()->role_id != '3', 401);
         return $next($request);
     }
 }

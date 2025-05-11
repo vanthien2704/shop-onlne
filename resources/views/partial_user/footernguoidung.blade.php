@@ -37,9 +37,7 @@
                                     <a href="{{ url('/productsgroup/all') }}" class="footer-items__info-links">Sản
                                         phẩm</a>
                                 </div>
-                                <div class="footer-items__info">
-                                    <a href="{{ url('/contact') }}" class="footer-items__info-links">Liên hệ</a>
-                                </div>
+                                
                             </ul>
                         </div>
                     </div>
@@ -54,9 +52,7 @@
                                     <a href="{{ url('/productsgroup/all') }}" class="footer-items__info-links">Sản
                                         phẩm</a>
                                 </div>
-                                <div class="footer-items__info">
-                                    <a href="{{ url('/contact') }}" class="footer-items__info-links">Liên hệ</a>
-                                </div>
+                                
                             </ul>
                         </div>
                     </div>
@@ -71,9 +67,7 @@
                                     <a href="{{ url('/productsgroup/all') }}" class="footer-items__info-links">Sản
                                         phẩm</a>
                                 </div>
-                                <div class="footer-items__info">
-                                    <a href="{{ url('/contact') }}" class="footer-items__info-links">Liên hệ</a>
-                                </div>
+
                             </ul>
                         </div>
                     </div>

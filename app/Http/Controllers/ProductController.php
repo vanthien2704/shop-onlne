@@ -77,7 +77,7 @@ class ProductController extends Controller
     public function vieworder()
     {
         $user_id = Auth::id();
-        $orders = Bill::where('user_id', $user_id)->with('carts.product')->orderBy('id', 'desc')->paginate(10);
+        $orders = Order::where('user_id', $user_id)->with('carts.product')->orderBy('id', 'desc')->paginate(10);
         return view('product.order', compact('orders'));
     }
 

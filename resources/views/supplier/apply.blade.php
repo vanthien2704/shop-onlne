@@ -4,27 +4,27 @@
         <div class="row">
             <div class="col l-6">
                 <h3 class="contact__heading">
-                    Liên hệ với chúng tôi
+                    Đăng ký nhà bán hàng
                 </h3>
                 @if(session('success'))
                     <h1 class="alert alert-success" style="color: red;">
                         {{ session('success') }}
                     </h1>
                 @endif
-                <form action="{{ url('/writecontact') }}" method="post">
+                <form action="{{ url('/dkapply') }}" method="post">
                     @csrf
                     <div class="contact__info">
                         <div class="contact__gr">
-                            <input type="text" class="contact__gr-input" name="hoten" placeholder="Họ và tên">
+                            <input type="text" class="contact__gr-input" name="name" placeholder="Họ và tên" required>
                         </div>
                         <div class="contact__gr">
-                            <input type="email" class="contact__gr-input" name="email" placeholder="Email">
+                            <input type="email" class="contact__gr-input" name="email" placeholder="Email" required>
                         </div>
                         <div class="contact__gr">
-                            <input type="text" class="contact__gr-input" name="sdt" placeholder="Điện thoại">
+                            <input type="text" class="contact__gr-input" name="phone" placeholder="Điện thoại" required>
                         </div>
                         <div class="contact__gr">
-                            <textarea id="ghichu"  cols="30" rows="8" name="ghichu" class="contact__gr-input" placeholder="Nội dung"></textarea>
+                            <textarea id="ghichu"  cols="30" rows="8" name="content" class="contact__gr-input" placeholder="Nội dung"></textarea>
                         </div>
                     </div>
                     <div class="contact__btn">

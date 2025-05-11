@@ -25,7 +25,12 @@ class AuthController extends Controller
             if ($user->enable != 1) {
                 return redirect()->back()->with('error', 'Tài khoản chưa được kích hoạt!');
             }
+
             Auth::login($user);
+
+            if ($user->role_id == 3) {
+                return redirect()->intended('/admin')->with('success', 'Đăng nhập vào tài khoản Admin thành công!');
+            }
             return redirect()->intended('/')->with('success', 'Đăng nhập thành công!');
         }
 

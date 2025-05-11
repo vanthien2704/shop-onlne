@@ -33,8 +33,8 @@
         <div class="form-group">
             <label for="quyen">Quyền:</label>
             <select class="form-control" name="role">
-                <option value="admin" {{ $editaccount->role == 'admin' ? 'selected' : '' }}>Admin</option>
-                <option value="user" {{ $editaccount->role == 'user' ? 'selected' : '' }}>User</option>
+                <option value="admin" {{ $editaccount->role_id == 'admin' ? 'selected' : '' }}>Admin</option>
+                <option value="user" {{ $editaccount->role_id == 'user' ? 'selected' : '' }}>User</option>
             </select>
         </div>
 

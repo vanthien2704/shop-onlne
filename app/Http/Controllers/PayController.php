@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Bill;
-use App\Models\Cart;
+use App\Models\Order;
+use App\Models\OrderDetail;
 use Illuminate\Support\Facades\Auth;
 use PayOS\PayOS;
 
@@ -13,7 +13,7 @@ class PayController extends Controller
 {
     public function createPaymentLink(Request $request)
     {
-        $bill = new Bill();
+        $bill = new Order();
         $bill->user_id = Auth::id();
         $bill->name = $request->input('hoten');
         $bill->address = $request->input('diachi');
@@ -27,7 +27,7 @@ class PayController extends Controller
         $cart = session()->get('cart', []);
 
         foreach ($cart as $key => $product) {
-            $cartItem = new Cart();
+            $cartItem = new OrderDetail();
             $cartItem->bill_id = $bill->id;
             $cartItem->product_id = $key;
             $cartItem->quantity = $product['quantity'];
@@ -63,7 +63,7 @@ class PayController extends Controller
     public function paynow(Request $request)
     {
         $orderId = $request->input('id');
-        $bill = Bill::where('id', $orderId)->first();
+        $bill = Order::where('id', $orderId)->first();
 
         $payOS = new PayOS(
             env("PAYOS_CLIENT_ID"),
@@ -94,7 +94,7 @@ class PayController extends Controller
             $orderId = $request->input('orderCode');
             $id = substr($orderId, -2);
 
-            Bill::where('id', $id)->update(['status' => 1]);
+            Order::where('id', $id)->update(['status' => 1]);
 
             return redirect('/orders')->with('success', 'Đặt hàng thành công!');
         }elseif ($request->input('cancel')) {

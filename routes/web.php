@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PayController;
+use App\Http\Controllers\SupplierController;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
@@ -34,10 +35,6 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::post('/register', [AuthController::class, 'register']);
 
-Route::get('/contact', [ProductController::class, 'contact']);
-
-Route::post('/writecontact', [ProductController::class, 'writecontact']);
-
 Route::post('/search', [SearchController::class, 'search']);
 
 Route::middleware(['auth'])->group(function(){
@@ -52,6 +49,8 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/payment', [PayController::class, 'createPaymentLink']);
     Route::post('/paynow', [PayController::class, 'paynow']);
     Route::get('/requestpayment', [PayController::class, 'requestpayment']);
+
+    Route::get('/supplier', [SupplierController::class, 'supplier']);
 });
 
 Route::middleware(['auth', App\Http\Middleware\AdminAuth::class])->group(function(){
@@ -87,5 +86,5 @@ Route::middleware(['auth', App\Http\Middleware\AdminAuth::class])->group(functio
 });
 
 Route::middleware(['auth', App\Http\Middleware\SupplierAuth::class])->group(function(){
-    Route::get('/admin', [AdminController::class, 'admin']);
+    // Route::get('/admin', [AdminController::class, 'admin']);
 });

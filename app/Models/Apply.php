@@ -14,6 +14,9 @@ use Illuminate\Database\Eloquent\Model;
  * 
  * @property int $id
  * @property int $user_id
+ * @property string|null $name
+ * @property string|null $email
+ * @property string|null $phone
  * @property string|null $content
  * @property Carbon|null $date
  * 
@@ -33,6 +36,9 @@ class Apply extends Model
 
 	protected $fillable = [
 		'user_id',
+		'name',
+		'email',
+		'phone',
 		'content',
 		'date'
 	];

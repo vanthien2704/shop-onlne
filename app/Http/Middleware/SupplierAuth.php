@@ -15,7 +15,7 @@ class SupplierAuth
      */
     public function handle(Request $request, Closure $next): Response
     {
-        abort_if(auth('web')->user()->role != '2', 401);
+        abort_if(auth('web')->user()->role_id != '2', 401);
         return $next($request);
     }
 }

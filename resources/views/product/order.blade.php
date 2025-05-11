@@ -188,7 +188,7 @@
                                     <div class='info-product__footer-bottom'>
                                         <form method="post" action="{{ url('/paynow') }}" class='info-product__footer-right'>
                                             @csrf
-                                            <a href="{{ url('contact') }}" class='info-product__footer-cancel'>Liên hệ người bán</a>
+                                            {{-- <a href="{{ url('contact') }}" class='info-product__footer-cancel'>Liên hệ người bán</a> --}}
                                             <input type="hidden" name="id" value="{{ $order->id }}">
                                             <input type="hidden" name="total" value="{{ $order->total }}">
                                             @if ($order->status == 0)
