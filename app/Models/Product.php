@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * 
  * @property int $id
  * @property int $group_id
+ * @property int $user_id
  * @property string $product_name
  * @property string $description
  * @property int $quantity
@@ -27,7 +28,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property Carbon|null $updated_at
  * 
  * @property ProductGroup $product_group
- * @property Collection|Cart[] $carts
+ * @property User $user
+ * @property Collection|Comment[] $comments
+ * @property Collection|OrderDetail[] $order_details
  *
  * @package App\Models
  */
@@ -37,6 +40,7 @@ class Product extends Model
 
 	protected $casts = [
 		'group_id' => 'int',
+		'user_id' => 'int',
 		'quantity' => 'int',
 		'unit_price' => 'int',
 		'old_unit_price' => 'int',
@@ -45,6 +49,7 @@ class Product extends Model
 
 	protected $fillable = [
 		'group_id',
+		'user_id',
 		'product_name',
 		'description',
 		'quantity',
@@ -60,8 +65,18 @@ class Product extends Model
 		return $this->belongsTo(ProductGroup::class, 'group_id');
 	}
 
-	public function carts()
+	public function user()
 	{
-		return $this->hasMany(Cart::class);
+		return $this->belongsTo(User::class);
+	}
+
+	public function comments()
+	{
+		return $this->hasMany(Comment::class);
+	}
+
+	public function order_details()
+	{
+		return $this->hasMany(OrderDetail::class);
 	}
 }

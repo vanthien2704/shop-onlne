@@ -23,12 +23,16 @@ use Illuminate\Notifications\Notifiable;
  * @property string $email
  * @property string $password
  * @property string $address
- * @property string $role
+ * @property int $role_id
  * @property bool $enable
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * 
- * @property Collection|Bill[] $bills
+ * @property Role $role
+ * @property Collection|Apply[] $applies
+ * @property Collection|Comment[] $comments
+ * @property Collection|Order[] $orders
+ * @property Collection|Product[] $products
  *
  * @package App\Models
  */
@@ -39,6 +43,7 @@ class User extends Authenticatable
 	protected $table = 'users';
 
 	protected $casts = [
+		'role_id' => 'int',
 		'enable' => 'bool'
 	];
 
@@ -53,12 +58,32 @@ class User extends Authenticatable
 		'email',
 		'password',
 		'address',
-		'role',
+		'role_id',
 		'enable'
 	];
 
-	public function bills()
+	public function role()
 	{
-		return $this->hasMany(Bill::class);
+		return $this->belongsTo(Role::class);
+	}
+
+	public function applies()
+	{
+		return $this->hasMany(Apply::class);
+	}
+
+	public function comments()
+	{
+		return $this->hasMany(Comment::class);
+	}
+
+	public function orders()
+	{
+		return $this->hasMany(Order::class);
+	}
+
+	public function products()
+	{
+		return $this->hasMany(Product::class);
 	}
 }

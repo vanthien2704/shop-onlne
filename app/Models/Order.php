@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Bill
+ * Class Order
  * 
  * @property int $id
  * @property string $name
@@ -21,23 +21,25 @@ use Illuminate\Database\Eloquent\Model;
  * @property Carbon $order_date
  * @property int $total
  * @property int $user_id
+ * @property int $payment
  * @property int $status
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * 
  * @property User $user
- * @property Collection|Cart[] $carts
+ * @property Collection|OrderDetail[] $order_details
  *
  * @package App\Models
  */
-class Bill extends Model
+class Order extends Model
 {
-	protected $table = 'bills';
+	protected $table = 'order';
 
 	protected $casts = [
 		'order_date' => 'datetime',
 		'total' => 'int',
 		'user_id' => 'int',
+		'payment' => 'int',
 		'status' => 'int'
 	];
 
@@ -49,6 +51,7 @@ class Bill extends Model
 		'order_date',
 		'total',
 		'user_id',
+		'payment',
 		'status'
 	];
 
@@ -57,8 +60,8 @@ class Bill extends Model
 		return $this->belongsTo(User::class);
 	}
 
-	public function carts()
+	public function order_details()
 	{
-		return $this->hasMany(Cart::class);
+		return $this->hasMany(OrderDetail::class, 'bill_id');
 	}
 }

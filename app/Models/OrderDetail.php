@@ -6,11 +6,10 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Cart
+ * Class OrderDetail
  * 
  * @property int $id
  * @property int $product_id
@@ -18,17 +17,16 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $quantity
  * @property int $total_price
  * @property int $bill_id
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
  * 
+ * @property Order $order
  * @property Product $product
- * @property Bill $bill
  *
  * @package App\Models
  */
-class Cart extends Model
+class OrderDetail extends Model
 {
-	protected $table = 'cart';
+	protected $table = 'order_detail';
+	public $timestamps = false;
 
 	protected $casts = [
 		'product_id' => 'int',
@@ -46,13 +44,13 @@ class Cart extends Model
 		'bill_id'
 	];
 
+	public function order()
+	{
+		return $this->belongsTo(Order::class, 'bill_id');
+	}
+
 	public function product()
 	{
 		return $this->belongsTo(Product::class);
-	}
-
-	public function bill()
-	{
-		return $this->belongsTo(Bill::class);
 	}
 }
