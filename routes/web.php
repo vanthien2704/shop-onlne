@@ -88,5 +88,17 @@ Route::middleware(['auth', App\Http\Middleware\AdminAuth::class])->group(functio
 });
 
 Route::middleware(['auth', App\Http\Middleware\SupplierAuth::class])->group(function(){
-    // Route::get('/admin', [AdminController::class, 'admin']);
+    Route::get('/supplier/dashboard', [SupplierController::class, 'dashboard']);
+    Route::get('/supplier/products', [SupplierController::class, 'products']);
+    Route::get('/supplier/products/edit/{id}', [SupplierController::class, 'editproduct']);
+    Route::get('/supplier/products/remove/{id}', [SupplierController::class, 'removeproduce']);
+    Route::post('/supplier/products/edit', [SupplierController::class, 'updateproduct']);
+    Route::get('/supplier/products/add', [SupplierController::class, 'addproduct']);
+    Route::post('/supplier/products/add', [SupplierController::class, 'creatproduct']);
+
+    Route::get('/supplier/bills', [SupplierController::class, 'bills']);
+    Route::get('/supplier/bills/detail/{id}', [SupplierController::class, 'detailbill']);
+    Route::post('/supplier/bills/edit', [SupplierController::class, 'updatebill']);
+
+    Route::get('/supplier/bills/sendbill/{id}', [SupplierController::class, 'sendbill']);
 });

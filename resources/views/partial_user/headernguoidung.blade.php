@@ -419,9 +419,15 @@
                                         <div class="header-top__join-wrap">
                                             <span title="Thông tin" class="header-top__join-in">{{ Auth::user()->fullname }}</span>
                                             <ul class="header-top__join-menu">
-                                                <li class="header-top__join-menu-items">
-                                                    <a class="header-top__join-out" href="{{ url('/supplier') }}">Trang nhà cung cấp</a>
-                                                </li>
+                                                @if(Auth::user()->role_id != 3)
+                                                    <li class="header-top__join-menu-items">
+                                                        <a class="header-top__join-out" href="{{ url('/supplier') }}">Trang nhà cung cấp</a>
+                                                    </li>
+                                                @else
+                                                    <li class="header-top__join-menu-items">
+                                                        <a class="header-top__join-out" href="{{ url('/admin') }}">Quản trị WebSite</a>
+                                                    </li>
+                                                @endif
                                                 <li class="header-top__join-menu-items">
                                                     <a class="header-top__join-out" href="{{ url('/orders') }}">Đơn hàng</a>
                                                 </li>

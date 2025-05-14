@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Shamdi - Admin</title>
+    <title>Shamdi - Nhà cung cấp</title>
     <link rel="shortcut icon" href="{{ asset('assets/img/iconweb.jpg') }}" type="image/x-icon">
 
     {{-- thông báo --}}
@@ -30,9 +30,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 
     <style>
-        #collapseTwo {
-            display:block;
-        }
         .sidebar .nav-item .nav-link[data-toggle="collapse"].collapsed::after {
             transform:rotate(90deg);
         }
@@ -106,7 +103,7 @@
                 <div class="sidebar-brand-icon rotate-n-15">
                 <i class="fa-solid fa-dragon"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">Admin<sup></sup></div>
+                <div class="sidebar-brand-text mx-3">Nhà cung cấp<sup></sup></div>
             </a>
 
             <!-- Divider -->
@@ -119,7 +116,7 @@
                     <span>Trang người dùng</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ url('/admin') }}">
+                <a class="nav-link" href="{{ url('/supplier') }}">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>Thống kê</span></a>
             </li>
@@ -130,41 +127,20 @@
             <li class="nav-item active">
                 <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true"
                     aria-controls="collapsePages">
-                    <i class="fa-solid fa-users"></i>
-                    <span>Mục tài khoản</span>
+                    <i class="fa-brands fa-product-hunt"></i>
+                    <span>Mục sản phẩm</span>
                 </a>
                 <div id="collapsePages" class="collapse show" aria-labelledby="headingPages"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Tài khoản:</h6>
-                        <a class="collapse-item" href="{{ url('/admin/account') }}">Danh sách tài khoản</a>
-                        <!-- <a class="collapse-item" href="themtaikhoan.php">Thêm tài khoản</a>            -->
-                        <!-- <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
-                        <div class="collapse-divider"></div>
-                        <h6 class="collapse-header">Other Pages:</h6>
-                        <a class="collapse-item" href="404.html">404 Page</a>
-                        <a class="collapse-item active" href="blank.html">Blank Page</a> -->
-                    </div>
-                </div>
-            </li>
-
-
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fa-brands fa-product-hunt"></i>
-                    <span>Mục sản phẩm</span>
-                </a>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Sản Phẩm:</h6>
-                        <a class="collapse-item" href="{{url('/admin/products')}}">Danh sách sản phẩm</a>
-                        <a class="collapse-item" href="{{url('/admin/groupproducts')}}">Nhóm sản phẩm</a>
+                        <a class="collapse-item" href="{{url('/supplier/products')}}">Danh sách sản phẩm</a>
+                        {{-- <a class="collapse-item active" href="blank.html">Blank Page</a> --}}
                     </div>
                 </div>
             </li>
 
+           
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
                     aria-expanded="true" aria-controls="collapseTwo">
@@ -174,21 +150,17 @@
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Đơn hàng:</h6>
-                        <!-- <a class="collapse-item" href="chitiethoadon.php">Giỏ hàng</a> -->
-                        <a class="collapse-item" href="{{ url('/admin/bills') }}">Hóa đơn</a>
+                        <a class="collapse-item" href="{{ url('/supplier/bills') }}">Hóa đơn</a>
                     </div>
                 </div>
             </li>
 
         </ul>
-        <!-- End of Sidebar -->
-
-        <!-- Content Wrapper -->
+         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
 
             <!-- Main Content -->
             <div id="content">
-
                 
     <!-- Bootstrap core JavaScript-->
     <script src="{{ asset('assetsadmin/vendor/jquery/jquery.min.js')}}"></script>

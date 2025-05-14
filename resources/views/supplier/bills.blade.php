@@ -1,4 +1,4 @@
-@include('admin.headeradmin')
+@include('supplier.headersupplier')
 
 <div class="example">
     <div class="container">

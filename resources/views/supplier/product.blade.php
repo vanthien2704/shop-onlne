@@ -1,18 +1,18 @@
-@include('admin.headeradmin')
+@include('supplier.headersupplier')
 <div class="example">
     <div class="container">
         <div class="row">
             <h2 class="heading_admin">Quản Lý Sản Phẩm </h2>
             <div class="link_admin-footer">
-                <a class="link_admin-btn" href="{{url('/admin/products/add')}}" >Thêm Sản Phẩm</a>
+                <a class="link_admin-btn" href="{{url('/supplier/products/add')}}" >Thêm Sản Phẩm</a>
             </div>
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th>Mã SP</th>
+                        <th>Mã sản phẩm</th>
                         <th>Nhóm</th>
                         <th>Tên Sản Phẩm</th>
-                        <th>Người Bán</th>
+                        {{-- <th>Mô Tả</th> --}}
                         <th>Đơn Giá</th>
                         <th>Đơn Giá Cũ</th>
                         <th>Số Lượng</th>
@@ -28,7 +28,7 @@
                             <td>{{ $product->id }}</td>
                             <td>{{ $product->product_group->group_name }}</td>
                             <td>{{ $product->product_name }}</td>
-                            <td>{{ $product->user_id }}</td>
+                            {{-- <td>{{ $product->description }}</td> --}}
                             <td>{{  Number::format($product->unit_price) }}</td>
                             <td>{{  Number::format($product->old_unit_price) }}</td>
                             <td>{{ $product->quantity }}</td>
@@ -38,10 +38,10 @@
                             <td>{{ $product->enable == 1 ? 'Đang bán' : 'Đã xóa' }}</td>
                             <td>{{ $product->note }}</td>
                             <td>
-                                <a class="link_admin link_admin-fix" href="{{ url('/admin/products/edit', $product->id) }}" style="text-decoration: none">Sửa</a>
+                                <a class="link_admin link_admin-fix" href="{{ url('/supplier/products/edit', $product->id) }}" style="text-decoration: none">Sửa</a>
                                 @if ($product->enable)
-                                    <a class="link_admin link_admin-delete" href="{{ url('/admin/products/remove', $product->id) }}" style="text-decoration: none">Xóa</a>
-                                    @endif
+                                    <a class="link_admin link_admin-delete" href="{{ url('/supplier/products/remove', $product->id) }}" style="text-decoration: none">Xóa</a>
+                                @endif
                             </td>
 
                         </tr>

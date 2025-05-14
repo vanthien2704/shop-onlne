@@ -14,11 +14,12 @@ use Illuminate\Database\Eloquent\Model;
  * 
  * @property int $id
  * @property int $user_id
- * @property string|null $name
- * @property string|null $email
- * @property string|null $phone
+ * @property string $name
+ * @property string $email
+ * @property string $phone
  * @property string|null $content
  * @property Carbon|null $date
+ * @property bool|null $status
  * 
  * @property User $user
  *
@@ -31,7 +32,8 @@ class Apply extends Model
 
 	protected $casts = [
 		'user_id' => 'int',
-		'date' => 'datetime'
+		'date' => 'datetime',
+		'status' => 'bool'
 	];
 
 	protected $fillable = [
@@ -40,7 +42,8 @@ class Apply extends Model
 		'email',
 		'phone',
 		'content',
-		'date'
+		'date',
+		'status'
 	];
 
 	public function user()

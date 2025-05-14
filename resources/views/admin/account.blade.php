@@ -4,6 +4,9 @@
     <div class="container">
         <div class="row">
             <h2 class="heading_admin">Quản Lý Tài Khoản</h2>
+            <div class="link_admin-footer">
+                <a class="link_admin-btn" href="{{url('/admin/account/add')}}" >Thêm Tài Khoản</a>
+            </div>
             <table class=" table table-bordered">
                 <thead>
                     <tr>
@@ -46,9 +49,7 @@
                 {{ $accounts->links('pagination::bootstrap-4') }}
             </div>
 
-            <div class="link_admin-footer">
-                    <a class="link_admin-btn" href="{{url('/admin/account/add')}}" >Thêm Tài Khoản</a>
-                </div>
+            
         </div>
     </div>
 
