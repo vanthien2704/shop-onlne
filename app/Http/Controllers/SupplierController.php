@@ -13,16 +13,18 @@ class SupplierController extends Controller
         return view('supplier.apply');
     }
     public function dkapply(Request $request) {
-
+        if (Apply::where('user_id', Auth::id())->exists()) {
+           return redirect()->back()->with('error', 'Bạn đã nộp đơn trước đó!');
+        }
         Apply::create([
             'user_id' => Auth::id(),
-            'name' => $request->input('hoten'),
+            'name' => $request->input('name'),
             'email' => $request->input('email'),
-            'phone' => $request->input('sdt'),
-            'content' => $request->input('ghichu'),
+            'phone' => $request->input('phone'),
+            'content' => $request->input('content'),
             'date' => now(),
         ]);
 
-        return redirect()->back()->with('success', 'Thông tin của bạn đã được gửi thành công!');
+        return redirect()->back()->with('success', 'Bạn đã đăng ký thành công! Vui lòng đợi phê duyệt.');
     }
 }

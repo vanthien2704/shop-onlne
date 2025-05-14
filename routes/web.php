@@ -38,6 +38,7 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/search', [SearchController::class, 'search']);
 
 Route::middleware(['auth'])->group(function(){
+
     Route::get('/removecart/{id}', [ProductController::class, 'removeFromCart']);
     Route::get('/orders', [ProductController::class, 'vieworder']);
     Route::get('/removecartall', [ProductController::class, 'clearCart']);
@@ -51,6 +52,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/requestpayment', [PayController::class, 'requestpayment']);
 
     Route::get('/supplier', [SupplierController::class, 'supplier']);
+    Route::post('/dkapply', [SupplierController::class, 'dkapply']);
 });
 
 Route::middleware(['auth', App\Http\Middleware\AdminAuth::class])->group(function(){

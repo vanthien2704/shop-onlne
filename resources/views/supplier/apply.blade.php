@@ -6,11 +6,6 @@
                 <h3 class="contact__heading">
                     Đăng ký nhà bán hàng
                 </h3>
-                @if(session('success'))
-                    <h1 class="alert alert-success" style="color: red;">
-                        {{ session('success') }}
-                    </h1>
-                @endif
                 <form action="{{ url('/dkapply') }}" method="post">
                     @csrf
                     <div class="contact__info">
