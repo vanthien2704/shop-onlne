@@ -61,6 +61,31 @@
 
 <div class="product-same">
     <div class="grid wide">
+        <h3 class="product-same__heading">Đánh giá sản phẩm:</h3>
+        @if ($iscomment)
+            <form action="{{ url('/addcomment')}}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <input type="hidden" name="product_id" value="{{$product->id}}" />
+                <textarea name="content" placeholder="Nhập nhận xét của bạn..." required style="width: 100%; height: 100px; font-size: 18px;"></textarea>
+                <br />
+                <button type="submit" class="detail-items__btn-cart">Gửi đánh giá</button>
+            </form>
+        @endif
+
+        @foreach ($commentall as $comment)
+            <div class="detail-items__support-gr">
+                <i class="fa-solid fa-user fa-5x"></i>
+                <div class="detail-items__support-gr-info">
+                    <h3 class="detail-items__support-gr-title">{{$comment->user->fullname}}</h3>
+                    <p class="detail-items__support-gr-msg">{{$comment->content}}</p>
+                </div>
+            </div>
+        @endforeach
+    </div>
+</div>
+
+<div class="product-same">
+    <div class="grid wide">
         <h3 class="product-same__heading">Sản phẩm khác</h3>
         <div class="row">
             @foreach(App\Helper\AppHelper::discountedProducts() as $product)

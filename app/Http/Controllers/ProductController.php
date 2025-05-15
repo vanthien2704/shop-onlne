@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Order;
 use App\Models\OrderDetail;
+use App\Models\Comment;
 use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
@@ -22,8 +23,27 @@ class ProductController extends Controller
 
     public function productdetail($id)
     {
-        $product = Product::where('id', $id)->first();
-        return view('product.productdetail', ['product' => $product]);
+        $product = Product::find($id);
+        $commentall = Comment::with('user')->where('product_id', $id)->orderBy('id', 'desc')->get();
+        // dd($comment);
+        $iscomment = false;
+        if (Auth::check())
+        {
+            $orders = Order::with(['order_details.product'])
+                ->where('user_id', Auth::id())
+                ->where('status', 1)
+                ->whereHas('order_details', function ($query) use ($id) {
+                    $query->where('product_id', $id);
+                })
+                ->get();
+            $feedback = Comment::where('user_id', Auth::id())
+                ->where('product_id', $id)
+                ->first();
+
+            $iscomment = $orders->isNotEmpty() && is_null($feedback);
+        }
+        
+        return view('product.productdetail', compact('product', 'commentall', 'iscomment'));
     }
 
     public function addToCart(Request $request)
@@ -77,7 +97,7 @@ class ProductController extends Controller
     public function vieworder()
     {
         $user_id = Auth::id();
-        $orders = Order::where('user_id', $user_id)->with('carts.product')->orderBy('id', 'desc')->paginate(10);
+        $orders = Order::where('user_id', $user_id)->with('order_details.product')->orderBy('id', 'desc')->paginate(10);
         return view('product.order', compact('orders'));
     }
 
@@ -95,5 +115,15 @@ class ProductController extends Controller
         }
 
         return response()->json(['success' => false, 'message' => 'Sản phẩm không tồn tại']);
+    }
+    public function addcomment(Request $request)
+    {
+        Comment::create([
+            'user_id' => Auth::id(),
+            'product_id' => $request->input('product_id'),
+            'content' => $request->input('content'),
+        ]);
+
+        return redirect()->back()->with('success', 'Bạn đã đánh giá sản phẩm này!');
     }
 }

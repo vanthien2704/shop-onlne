@@ -33,8 +33,14 @@
         <div class="form-group">
             <label for="quyen">Quyền:</label>
             <select class="form-control" name="role">
-                <option value="admin" {{ $editaccount->role_id == 'admin' ? 'selected' : '' }}>Admin</option>
-                <option value="user" {{ $editaccount->role_id == 'user' ? 'selected' : '' }}>User</option>
+                @forelse (App\Helper\AppHelper::role() as $role)
+                <option value="{{ $role->id }}" 
+                    @if($role->id == $editaccount->role_id) selected @endif>
+                    {{ $role->rolename }}
+                </option>
+                @empty
+                    <option value="">No role</option>
+                @endforelse
             </select>
         </div>
 

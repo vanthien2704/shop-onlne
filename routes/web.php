@@ -47,12 +47,14 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/cart', [ProductController::class, 'viewCart']);
     Route::get('/logout', [AuthController::class, 'logout']);
 
-    Route::post('/payment', [PayController::class, 'createPaymentLink']);
-    Route::post('/paynow', [PayController::class, 'paynow']);
+    Route::post('/payment', [PayController::class, 'payment']);
+    Route::post('/received', [PayController::class, 'received']);
     Route::get('/requestpayment', [PayController::class, 'requestpayment']);
 
     Route::get('/supplier', [SupplierController::class, 'supplier']);
     Route::post('/dkapply', [SupplierController::class, 'dkapply']);
+
+    Route::post('/addcomment', [ProductController::class, 'addcomment']);
 });
 
 Route::middleware(['auth', App\Http\Middleware\AdminAuth::class])->group(function(){

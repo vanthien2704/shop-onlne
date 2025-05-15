@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $unit_price
  * @property int $quantity
  * @property int $total_price
- * @property int $bill_id
+ * @property int $order_id
  * 
  * @property Order $order
  * @property Product $product
@@ -33,7 +33,7 @@ class OrderDetail extends Model
 		'unit_price' => 'int',
 		'quantity' => 'int',
 		'total_price' => 'int',
-		'bill_id' => 'int'
+		'order_id' => 'int'
 	];
 
 	protected $fillable = [
@@ -41,12 +41,12 @@ class OrderDetail extends Model
 		'unit_price',
 		'quantity',
 		'total_price',
-		'bill_id'
+		'order_id'
 	];
 
 	public function order()
 	{
-		return $this->belongsTo(Order::class, 'bill_id');
+		return $this->belongsTo(Order::class);
 	}
 
 	public function product()

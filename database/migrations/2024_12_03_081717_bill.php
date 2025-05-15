@@ -33,12 +33,12 @@ return new class extends Migration
             $table->integer('unit_price');
             $table->integer('quantity');
             $table->integer('total_price');
-            $table->foreignId('bill_id')->constrained('bills')->onDelete('cascade');
+            $table->foreignId('order_id')->constrained('bills')->onDelete('cascade');
             $table->timestamps(0);
 
             $table->primary('id');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
-            $table->foreign('bill_id')->references('id')->on('bills')->onDelete('cascade');
+            $table->foreign('order_id')->references('id')->on('bills')->onDelete('cascade');
         });
         
     }

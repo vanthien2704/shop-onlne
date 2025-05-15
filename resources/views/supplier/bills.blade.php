@@ -38,7 +38,7 @@
                                 @endswitch
                             </td>
                             <td>
-                                <a class="link_admin link_admin-fix" href="{{ url('/admin/bills/detail', $bill->id) }}" style="text-decoration: none">Xem</a>
+                                <a class="link_admin link_admin-fix" href="{{ url('/supplier/bills/detail', $bill->id) }}" style="text-decoration: none">Xem</a>
                             </td>
                         </tr>
                     @empty

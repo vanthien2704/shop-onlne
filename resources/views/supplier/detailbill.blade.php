@@ -1,4 +1,4 @@
-@include('admin.headeradmin')
+@include('supplier.headersupplier')
 
 <h2 class="heading_admin">Thông tin hóa đơn {{$bill->id}}</h2>
 
@@ -29,16 +29,18 @@
             </thead>
             <tbody>
                 @forelse ($bill->order_details as $cart)
+                    @if ($cart->product && $cart->product->user_id == Auth::id())
                     <tr>
                         <td>{{ $cart->id }}</td>
-                        <td>{{ $cart->product->id }}</td>
+                        <td>{{ $cart->product->product_name }}</td>
                         <td>
                             <img src="{{ asset('upload/' . $cart->product->image) }}"alt="" width="50">
                          </td>
-                        <td>{{ $cart->product->id }}</td>
-                        <td>{{ $cart->product->id }}</td>
-                        <td>{{ $cart->product->id }}</td>
+                        <td>{{ $cart->unit_price }}</td>
+                        <td>{{ $cart->quantity}}</td>
+                        <td>{{ $cart->total_price}}</td>
                     </tr>
+                     @endif
                 @empty
                     <tr>
                         <td colspan="8" class="text-center">Không có dữ liệu</td>
@@ -62,6 +64,9 @@
         </div>
     
         <button type="submit" class="btn btn-primary" name="ok">Cập nhật</button>
+        @if ($bill->status != 2)
+            <a href="{{ url('/supplier/bills/sendbill', $bill->id) }}" class="btn btn-primary">Giao hàng</a>
+        @endif
         <a href="{{ url()->previous() }}" class="btn btn-primary">Trở lại</a>
     </form>
 </div>

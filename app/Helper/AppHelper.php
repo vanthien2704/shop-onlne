@@ -4,6 +4,7 @@ namespace App\Helper;
 
 use App\Models\Product;
 use App\Models\ProductGroup;
+use App\Models\Role;
 
 class AppHelper
 {
@@ -33,5 +34,10 @@ class AppHelper
         // Lấy tất cả các nhóm sản phẩm
         $groups = ProductGroup::all()->where('enable', 1);
         return $groups;
+    }
+    public static function role()
+    {
+        $roleall = Role::all();
+        return $roleall;
     }
 }

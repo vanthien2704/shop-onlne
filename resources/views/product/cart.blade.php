@@ -25,6 +25,17 @@
                                 <input type="text" name="email" class="cart__info-input" required>
                             </div>
                         </div>
+                        <h3 class="product__heading">Phương thức thanh toán</h3>
+                        <div class="cart__info l-o-1">
+                            <div class="cart__info-gr">
+                                <input type="radio" id="cod" name="payment" value="0" required>
+                                <label for="cod" style="font-size: 15px;"> Thanh toán khi nhận hàng (COD)</label>
+                            </div>
+                            <div class="cart__info-gr">
+                                <input type="radio" id="bank" name="payment" value="1">
+                                <label for="bank" style="font-size: 15px;"> Chuyển khoản ngân hàng</label>
+                            </div>
+                        </div>
                     </div>
                     <div class="cart__product">
                         <h3 class="product__heading">Giỏ hàng</h3>

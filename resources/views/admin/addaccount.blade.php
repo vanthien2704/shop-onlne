@@ -30,9 +30,14 @@
         </div>
         <div class="form-group">
             <label for="quyen">Quyền:</label>
-            <select class="form-control" name="quyen">
-                <option value="user" >User</option>
-                <option value="admin" >Admin</option>
+            <select class="form-control" name="role">
+                @forelse (App\Helper\AppHelper::role() as $role)
+                <option value="{{ $role->id }}">
+                    {{ $role->rolename }}
+                </option>
+                @empty
+                    <option value="">No role</option>
+                @endforelse
             </select>
         </div>
         <div class="form-group form-check">

@@ -15,7 +15,7 @@ class AdminController extends Controller
     //
     public function admin()
     {
-        $revenue = Order::selectRaw("
+        $revenue = Order::where('status', 3)->selectRaw("
             SUM(CASE WHEN DATE(order_date) = CURDATE() THEN total ELSE 0 END) AS doanh_thu_ngay_hien_tai,
             SUM(CASE WHEN YEAR(order_date) = YEAR(CURDATE()) AND WEEK(order_date) = WEEK(CURDATE()) THEN total ELSE 0 END) AS doanh_thu_tuan_hien_tai,
             SUM(CASE WHEN YEAR(order_date) = YEAR(CURDATE()) THEN total ELSE 0 END) AS doanh_thu_nam_hien_tai,
@@ -34,9 +34,11 @@ class AdminController extends Controller
             SUM(CASE WHEN MONTH(order_date) = 12 THEN total ELSE 0 END) AS doanh_thu_thang_12
         ")->first();
 
-        $sumbill = Order::count();
+        $sumbill = Order::where('status', 3)->count();
 
-        $sumproduct = OrderDetail::sum('quantity');
+        $sumproduct = OrderDetail::whereHas('order', function ($query) {
+            $query->where('status', 3);
+        })->sum('quantity');
 
         return view('admin.admin', compact('revenue', 'sumbill', 'sumproduct'));
     }
@@ -70,7 +72,7 @@ class AdminController extends Controller
             'phone' => $request->input('phone'),
             'email' => $request->input('email'),
             'address' => $request->input('address'),
-            'role' => $request->input('role'),
+            'role_id' => $request->input('role'),
             'enable' => $request->input('enable') ?? 0,
         ];
 
@@ -105,16 +107,22 @@ class AdminController extends Controller
             'diachi' => 'required|string|max:255',
         ]);
 
-        User::create([
+        $addacc = User::create([
             'username' => $validated['tendangnhap'],
             'password' => Hash::make($validated['matkhau']),
             'fullname' => $validated['hoten'],
             'phone' => $validated['sdt'],
             'email' => $validated['email'],
             'address' => $validated['diachi'],
+            'role_id' => $request->input('role'),
         ]);
 
-        return redirect('/admin/account')->with('success', 'Thêm thành công!');
+        if ($addacc) {
+            return redirect('/admin/account')->with('success', 'Thêm thành công!');
+        } else {
+            return redirect()->back()->with('error', 'Kiểm tra lại dữ liệu!');
+        }
+        
     }
 
     public function products()
@@ -268,7 +276,7 @@ class AdminController extends Controller
 
     public function detailbill($id)
     {
-        $bill = Order::where('id', $id)->with('carts.product')->first();
+        $bill = Order::where('id', $id)->with('order_details.product')->first();
 
         return view('admin.detailbill', compact('bill'));
     }
@@ -290,7 +298,7 @@ class AdminController extends Controller
 
     public function sendbill($id)
     {
-        $detailbill = OrderDetail::where('bill_id', $id)->get();
+        $detailbill = OrderDetail::where('order_id', $id)->get();
 
         Order::where('id', $id)->update(['status' => 2]);
 

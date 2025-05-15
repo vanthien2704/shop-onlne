@@ -9,6 +9,7 @@ use App\Models\OrderDetail;
 use App\Models\Product;
 use App\Models\ProductGroup;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class SupplierController extends Controller
 {
@@ -21,28 +22,42 @@ class SupplierController extends Controller
     }
     public function dashboard()
     {
-        $revenue = Order::selectRaw("
-            SUM(CASE WHEN DATE(order_date) = CURDATE() THEN total ELSE 0 END) AS doanh_thu_ngay_hien_tai,
-            SUM(CASE WHEN YEAR(order_date) = YEAR(CURDATE()) AND WEEK(order_date) = WEEK(CURDATE()) THEN total ELSE 0 END) AS doanh_thu_tuan_hien_tai,
-            SUM(CASE WHEN YEAR(order_date) = YEAR(CURDATE()) THEN total ELSE 0 END) AS doanh_thu_nam_hien_tai,
-            SUM(total) AS tong_doanh_thu,
-            SUM(CASE WHEN MONTH(order_date) = 1 THEN total ELSE 0 END) AS doanh_thu_thang_1,
-            SUM(CASE WHEN MONTH(order_date) = 2 THEN total ELSE 0 END) AS doanh_thu_thang_2,
-            SUM(CASE WHEN MONTH(order_date) = 3 THEN total ELSE 0 END) AS doanh_thu_thang_3,
-            SUM(CASE WHEN MONTH(order_date) = 4 THEN total ELSE 0 END) AS doanh_thu_thang_4,
-            SUM(CASE WHEN MONTH(order_date) = 5 THEN total ELSE 0 END) AS doanh_thu_thang_5,
-            SUM(CASE WHEN MONTH(order_date) = 6 THEN total ELSE 0 END) AS doanh_thu_thang_6,
-            SUM(CASE WHEN MONTH(order_date) = 7 THEN total ELSE 0 END) AS doanh_thu_thang_7,
-            SUM(CASE WHEN MONTH(order_date) = 8 THEN total ELSE 0 END) AS doanh_thu_thang_8,
-            SUM(CASE WHEN MONTH(order_date) = 9 THEN total ELSE 0 END) AS doanh_thu_thang_9,
-            SUM(CASE WHEN MONTH(order_date) = 10 THEN total ELSE 0 END) AS doanh_thu_thang_10,
-            SUM(CASE WHEN MONTH(order_date) = 11 THEN total ELSE 0 END) AS doanh_thu_thang_11,
-            SUM(CASE WHEN MONTH(order_date) = 12 THEN total ELSE 0 END) AS doanh_thu_thang_12
-        ")->first();
+        $revenue = DB::table('order_detail')
+            ->join('products', 'order_detail.product_id', '=', 'products.id')
+            ->join('order', 'order_detail.order_id', '=', 'order.id')
+            ->where('products.user_id', Auth::id())
+            ->where('order.status', 3)
+            ->selectRaw("
+                SUM(CASE WHEN DATE(order.order_date) = CURDATE() THEN order_detail.total_price ELSE 0 END) AS doanh_thu_ngay_hien_tai,
+                SUM(CASE WHEN YEAR(order.order_date) = YEAR(CURDATE()) AND WEEK(order.order_date, 1) = WEEK(CURDATE(), 1) THEN order_detail.total_price ELSE 0 END) AS doanh_thu_tuan_hien_tai,
+                SUM(CASE WHEN YEAR(order.order_date) = YEAR(CURDATE()) THEN order_detail.total_price ELSE 0 END) AS doanh_thu_nam_hien_tai,
+                SUM(order_detail.total_price) AS tong_doanh_thu,
+                SUM(CASE WHEN MONTH(order.order_date) = 1 THEN order_detail.total_price ELSE 0 END) AS doanh_thu_thang_1,
+                SUM(CASE WHEN MONTH(order.order_date) = 2 THEN order_detail.total_price ELSE 0 END) AS doanh_thu_thang_2,
+                SUM(CASE WHEN MONTH(order.order_date) = 3 THEN order_detail.total_price ELSE 0 END) AS doanh_thu_thang_3,
+                SUM(CASE WHEN MONTH(order.order_date) = 4 THEN order_detail.total_price ELSE 0 END) AS doanh_thu_thang_4,
+                SUM(CASE WHEN MONTH(order.order_date) = 5 THEN order_detail.total_price ELSE 0 END) AS doanh_thu_thang_5,
+                SUM(CASE WHEN MONTH(order.order_date) = 6 THEN order_detail.total_price ELSE 0 END) AS doanh_thu_thang_6,
+                SUM(CASE WHEN MONTH(order.order_date) = 7 THEN order_detail.total_price ELSE 0 END) AS doanh_thu_thang_7,
+                SUM(CASE WHEN MONTH(order.order_date) = 8 THEN order_detail.total_price ELSE 0 END) AS doanh_thu_thang_8,
+                SUM(CASE WHEN MONTH(order.order_date) = 9 THEN order_detail.total_price ELSE 0 END) AS doanh_thu_thang_9,
+                SUM(CASE WHEN MONTH(order.order_date) = 10 THEN order_detail.total_price ELSE 0 END) AS doanh_thu_thang_10,
+                SUM(CASE WHEN MONTH(order.order_date) = 11 THEN order_detail.total_price ELSE 0 END) AS doanh_thu_thang_11,
+                SUM(CASE WHEN MONTH(order.order_date) = 12 THEN order_detail.total_price ELSE 0 END) AS doanh_thu_thang_12
+            ")
+            ->first();
         
-        $sumbill = Order::count();
+        $sumbill = Order::whereHas('order_details.product', function ($query) {
+            $query->where('user_id', Auth::id());
+        })->where('status', 3)
+          ->count();
         
-        $sumproduct = OrderDetail::sum('quantity');
+        $sumproduct = OrderDetail::whereHas('product', function ($query) {
+            $query->where('user_id', Auth::id());
+        })->whereHas('order', function ($query) {
+            $query->where('status', 3);
+        })->sum('quantity');
+
         
         return view('supplier.dashboard', compact('revenue', 'sumbill', 'sumproduct'));
     }
@@ -146,13 +161,18 @@ class SupplierController extends Controller
     }
     public function bills()
     {
-        $bills = Order::with('user')->orderBy('id', 'desc')->paginate(10);
+        $bills = Order::whereHas('order_details.product', function ($query) {
+            $query->where('user_id', Auth::id());
+            })
+            ->with(['user', 'order_details.product'])
+            ->orderBy('id', 'desc')
+            ->paginate(10);
         return view('supplier.bills', compact('bills'));
     }
 
     public function detailbill($id)
     {
-        $bill = Order::where('id', $id)->with('carts.product')->first();
+        $bill = Order::where('id', $id)->with('order_details.product')->first();
 
         return view('supplier.detailbill', compact('bill'));
     }
@@ -174,7 +194,7 @@ class SupplierController extends Controller
 
     public function sendbill($id)
     {
-        $detailbill = OrderDetail::where('bill_id', $id)->get();
+        $detailbill = OrderDetail::where('order_id', $id)->get();
 
         Order::where('id', $id)->update(['status' => 2]);
 

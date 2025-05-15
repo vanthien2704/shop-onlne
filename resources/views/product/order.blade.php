@@ -154,21 +154,21 @@
                                 <p class='info-product__heading-status'>
                                     @switch($order->status)
                                         @case(0)
-                                            Chưa thanh thoán
+                                            Đang chuẩn bị hàng
                                             @break
                                         @case(1)
-                                            Đã thanh toán
+                                            Đang giao
                                             @break
                                         @case(2)
-                                            Đơn hàng đã giao
+                                            Đã nhận hàng
                                             @break
                                         @default
-                                            Đơn hàng đã bị hủy
+                                            Đã bị hủy
                                     @endswitch
                                 </p>
                             </div>
                             <div class='info-product__table-after'>
-                                @foreach ($order->carts as $cart)
+                                @foreach ($order->order_details as $cart)
                                     <div class='info-product__table-container'>
                                         <div class='info-product__container-left'>
                                             <img src="{{ asset('upload/' . $cart->product->image) }}" alt="{{ $cart->product->name }}" class='info-product__container-left-img'>
@@ -186,13 +186,12 @@
                                 <div class='info-product__table-footer'>
                                     <p class='info-product__footer-top'>Thành Tiền: <span class='info-product__footer-top-money'>{{ Number::format($order->total) }} đ</span></p>
                                     <div class='info-product__footer-bottom'>
-                                        <form method="post" action="{{ url('/paynow') }}" class='info-product__footer-right'>
+                                        <form method="post" action="{{ url('/received') }}" class='info-product__footer-right'>
                                             @csrf
                                             {{-- <a href="{{ url('contact') }}" class='info-product__footer-cancel'>Liên hệ người bán</a> --}}
                                             <input type="hidden" name="id" value="{{ $order->id }}">
-                                            <input type="hidden" name="total" value="{{ $order->total }}">
-                                            @if ($order->status == 0)
-                                                <button type="submit" class="info-product__footer-cancel" name="cancel_order">Thanh toán ngay</button>
+                                            @if ($order->status < 2)
+                                                <button type="submit" class="info-product__footer-cancel" name="cancel_order">Đã nhận hàng</button>
                                             @endif
                                         </form>
                                     </div>
