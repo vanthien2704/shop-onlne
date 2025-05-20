@@ -6,6 +6,9 @@
             <div class="link_admin-footer">
                 <a class="link_admin-btn" href="{{url('/admin/products/add')}}" >Thêm Sản Phẩm</a>
             </div>
+            <div class="link_admin">
+                <a class="link_admin-btn" href="{{url('/admin/exportproducts')}}" >Xuất Excel</a>
+            </div>
             <table class="table table-bordered">
                 <thead>
                     <tr>

@@ -3,7 +3,10 @@
 <div class="example">
     <div class="container">
         <div class="row">
-            <h2 class="heading_admin">Quản Lý Hóa Đơn</h2>
+            <h2 class="heading_admin">Quản Lý Đơn Hàng</h2>
+            <div class="link_admin">
+                <a class="link_admin-btn" href="{{url('/supplier/exportorder')}}" >Xuất Excel</a>
+            </div>
             <table class=" table table-bordered">
                 <thead>
                     <tr>

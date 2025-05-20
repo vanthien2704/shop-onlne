@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Apply;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderDetail;
@@ -10,16 +11,22 @@ use App\Models\Product;
 use App\Models\ProductGroup;
 use Illuminate\Support\Facades\Hash;
 
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\CustomExport;
+use App\Exports\OrderMultiSheetExport;
+
 class AdminController extends Controller
 {
     //
-    public function admin()
+    public function admin(Request $request)
     {
-        $revenue = Order::where('status', 3)->selectRaw("
-            SUM(CASE WHEN DATE(order_date) = CURDATE() THEN total ELSE 0 END) AS doanh_thu_ngay_hien_tai,
-            SUM(CASE WHEN YEAR(order_date) = YEAR(CURDATE()) AND WEEK(order_date) = WEEK(CURDATE()) THEN total ELSE 0 END) AS doanh_thu_tuan_hien_tai,
-            SUM(CASE WHEN YEAR(order_date) = YEAR(CURDATE()) THEN total ELSE 0 END) AS doanh_thu_nam_hien_tai,
-            SUM(total) AS tong_doanh_thu,
+        $StartDate = $request->input('StartDate') ?? now()->toDateString();
+        $EndDate = $request->input('EndDate') ?? now()->toDateString();
+        $doanh_thu = Order::where('status', 2)
+            ->whereBetween('order_date', [$StartDate, $EndDate])
+            ->sum('total');
+        $revenue = Order::where('status', 2)
+            ->selectRaw("
             SUM(CASE WHEN MONTH(order_date) = 1 THEN total ELSE 0 END) AS doanh_thu_thang_1,
             SUM(CASE WHEN MONTH(order_date) = 2 THEN total ELSE 0 END) AS doanh_thu_thang_2,
             SUM(CASE WHEN MONTH(order_date) = 3 THEN total ELSE 0 END) AS doanh_thu_thang_3,
@@ -34,18 +41,20 @@ class AdminController extends Controller
             SUM(CASE WHEN MONTH(order_date) = 12 THEN total ELSE 0 END) AS doanh_thu_thang_12
         ")->first();
 
-        $sumbill = Order::where('status', 3)->count();
+        $sumbill = Order::where('status', 2)
+            ->whereBetween('order_date', [$StartDate, $EndDate])
+            ->count();
 
-        $sumproduct = OrderDetail::whereHas('order', function ($query) {
-            $query->where('status', 3);
+        $sumproduct = OrderDetail::whereHas('order', function ($query) use ($StartDate, $EndDate) {
+            $query->whereBetween('order_date', [$StartDate, $EndDate])->where('status', 2);
         })->sum('quantity');
 
-        return view('admin.admin', compact('revenue', 'sumbill', 'sumproduct'));
+        return view('admin.admin', compact('revenue','doanh_thu', 'sumbill', 'sumproduct', 'StartDate', 'EndDate'));
     }
 
     public function account()
     {
-        $accounts = User::orderBy('id', 'desc')->paginate(10);
+        $accounts = User::with('role')->orderBy('id', 'desc')->paginate(10);
 
         return view('admin.account', compact('accounts'));
     }
@@ -307,5 +316,96 @@ class AdminController extends Controller
         }
 
         return redirect('/admin/bills')->with('success', 'Đơn hàng đã được gửi đi!');
+    }
+    public function supplier()
+    {
+        $applys = Apply::orderBy('id', 'desc')->paginate(10);
+
+        return view('admin.supplier', compact('applys'));
+    }
+    public function editsupplier($id)
+    {
+        $editsupplier = Apply::where('id', $id)->first();
+
+        return view('admin.editsupplier', compact('editsupplier'));
+    }
+    public function addsupplier($id)
+    {
+        $apply = Apply::findOrFail($id);
+        $apply->update(['status' => 1]);
+        User::where('id', $apply->user_id)->update(['role_id' => 2]);
+        return redirect('/admin/supplier')->with('success', 'Bạn đã duyệt đơn ' . $id . '!');
+    }
+    public function export_products()
+    {
+        $products = Product::with('product_group')->orderBy('id', 'desc')->get();
+        $headings = ['ID', 'Tên sản phẩm', 'Nhóm sản phẩm', 'Giá', 'Giá cũ', 'Số lượng tồn'];
+        $data = $products->map(function($product) {
+            return [
+                $product->id,
+                $product->product_name,
+                $product->product_group->group_name ?? '',
+                $product->unit_price,
+                $product->old_unit_price,
+                $product->quantity,
+            ];
+        })->toArray();
+        return Excel::download(new CustomExport($data, $headings), 'products.xlsx');
+    }
+    public function export_oder()
+    {
+       $orders = Order::with(['user', 'order_details.product'])
+            ->orderBy('id', 'desc')
+            ->get();
+
+        $orderdetails = OrderDetail::with('product')->get();
+
+        $headings1 = ['ID', 'Người mua', 'Người đặt', 'Địa chỉ', 'Phone', 'Ngày đặt', 'Trạng thái'];
+        $data1 = $orders->map(function($order) {
+            $statusText = match($order->status) {
+                0 => 'Chưa thanh toán',
+                1 => 'Đã thanh toán',
+                2 => 'Đơn hàng đã giao',
+                default => 'Đơn hàng đã bị hủy',
+            };
+            return [
+                $order->id,
+                $order->name,
+                $order->user->username,
+                $order->address,
+                $order->phone,
+                $order->order_date,
+                $statusText,
+            ];
+        })->toArray();
+
+        $headings2 = ['Mã đơn hàng', 'Tên sản phẩm', 'Số lượng', 'Đơn Giá', 'Tổng tiền'];
+        $data2 = $orderdetails->map(function($orderdetail) {
+            return [
+                $orderdetail->order_id,
+                $orderdetail->product->product_name,
+                $orderdetail->unit_price,
+                $orderdetail->quantity,
+                $orderdetail->total_price,
+            ];
+        })->toArray();
+         return Excel::download(new OrderMultiSheetExport($data1, $headings1, $data2, $headings2), 'orders.xlsx');
+    }
+    public function export_account()
+    {
+        $accounts = User::with('role')->orderBy('id', 'desc')->get();
+        $headings = ['ID', 'Tên đăng nhập', 'Họ và tên', 'Phone', 'Email', 'Địa chỉ', 'Quyền'];
+        $data = $accounts->map(function($account) {
+            return [
+                $account->id,
+                $account->username,
+                $account->fullname,
+                $account->phone,
+                $account->email,
+                $account->address,
+                $account->role->rolename,
+            ];
+        })->toArray();
+        return Excel::download(new CustomExport($data, $headings), 'account.xlsx');
     }
 }

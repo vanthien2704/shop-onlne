@@ -7,6 +7,9 @@
             <div class="link_admin-footer">
                 <a class="link_admin-btn" href="{{url('/admin/account/add')}}" >Thêm Tài Khoản</a>
             </div>
+             <div class="link_admin">
+                <a class="link_admin-btn" href="{{url('/admin/exportaccount')}}" >Xuất Excel</a>
+            </div>
             <table class=" table table-bordered">
                 <thead>
                     <tr>
@@ -28,7 +31,7 @@
                             <td>{{ $account->phone }}</td>
                             <td>{{ $account->email }}</td>
                             <td>{{ $account->address }}</td>
-                            <td>{{ $account->role_id }}</td>
+                            <td>{{ $account->role->rolename }}</td>
                             <td>{{ $account->enable == 1 ? 'Đang sử dụng' : 'Đã xóa' }}</td>
                             <td>
                                 <a class="link_admin link_admin-fix" href="{{ url('/admin/account/edit', $account->id) }}" style="text-decoration: none">Sửa</a>

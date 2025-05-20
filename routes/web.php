@@ -59,6 +59,7 @@ Route::middleware(['auth'])->group(function(){
 
 Route::middleware(['auth', App\Http\Middleware\AdminAuth::class])->group(function(){
     Route::get('/admin', [AdminController::class, 'admin']);
+    Route::post('/admin', [AdminController::class, 'admin']);
 
     Route::get('/admin/account', [AdminController::class, 'account']);
     Route::get('/admin/account/remove/{id}', [AdminController::class, 'removeaccount']);
@@ -87,10 +88,19 @@ Route::middleware(['auth', App\Http\Middleware\AdminAuth::class])->group(functio
 
     Route::get('/admin/bills/sendbill/{id}', [AdminController::class, 'sendbill']);
 
+    Route::get('/admin/supplier', [AdminController::class, 'supplier']);
+    Route::get('/admin/supplier/edit/{id}', [AdminController::class, 'editsupplier']);
+    Route::get('/admin/supplier/addsupplier/{id}', [AdminController::class, 'addsupplier']);
+
+    Route::get('/admin/exportproducts', [AdminController::class, 'export_products']);
+    Route::get('/admin/exportorder', [AdminController::class, 'export_oder']);
+    Route::get('/admin/exportaccount', [AdminController::class, 'export_account']);
+
 });
 
 Route::middleware(['auth', App\Http\Middleware\SupplierAuth::class])->group(function(){
     Route::get('/supplier/dashboard', [SupplierController::class, 'dashboard']);
+    Route::post('/supplier/dashboard', [SupplierController::class, 'dashboard']);
     Route::get('/supplier/products', [SupplierController::class, 'products']);
     Route::get('/supplier/products/edit/{id}', [SupplierController::class, 'editproduct']);
     Route::get('/supplier/products/remove/{id}', [SupplierController::class, 'removeproduce']);
@@ -103,4 +113,7 @@ Route::middleware(['auth', App\Http\Middleware\SupplierAuth::class])->group(func
     Route::post('/supplier/bills/edit', [SupplierController::class, 'updatebill']);
 
     Route::get('/supplier/bills/sendbill/{id}', [SupplierController::class, 'sendbill']);
+
+    Route::get('/supplier/exportproducts', [SupplierController::class, 'export_products']);
+    Route::get('/supplier/exportorder', [SupplierController::class, 'export_oder']);
 });

@@ -11,6 +11,10 @@ use App\Models\ProductGroup;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\CustomExport;
+use App\Exports\OrderMultiSheetExport;
+
 class SupplierController extends Controller
 {
     public function supplier()
@@ -20,18 +24,23 @@ class SupplierController extends Controller
         }
         return view('supplier.apply');
     }
-    public function dashboard()
+    public function dashboard(Request $request)
     {
+        $StartDate = $request->input('StartDate') ?? now()->toDateString();
+        $EndDate = $request->input('EndDate') ?? now()->toDateString();
+        $doanh_thu = DB::table('order_detail')
+            ->join('products', 'order_detail.product_id', '=', 'products.id')
+            ->join('order', 'order_detail.order_id', '=', 'order.id')
+            ->where('products.user_id', Auth::id())
+            ->where('order.status', 2)
+            ->whereBetween('order.order_date', [$StartDate, $EndDate])
+            ->sum('total');
         $revenue = DB::table('order_detail')
             ->join('products', 'order_detail.product_id', '=', 'products.id')
             ->join('order', 'order_detail.order_id', '=', 'order.id')
             ->where('products.user_id', Auth::id())
-            ->where('order.status', 3)
+            ->where('order.status', 2)
             ->selectRaw("
-                SUM(CASE WHEN DATE(order.order_date) = CURDATE() THEN order_detail.total_price ELSE 0 END) AS doanh_thu_ngay_hien_tai,
-                SUM(CASE WHEN YEAR(order.order_date) = YEAR(CURDATE()) AND WEEK(order.order_date, 1) = WEEK(CURDATE(), 1) THEN order_detail.total_price ELSE 0 END) AS doanh_thu_tuan_hien_tai,
-                SUM(CASE WHEN YEAR(order.order_date) = YEAR(CURDATE()) THEN order_detail.total_price ELSE 0 END) AS doanh_thu_nam_hien_tai,
-                SUM(order_detail.total_price) AS tong_doanh_thu,
                 SUM(CASE WHEN MONTH(order.order_date) = 1 THEN order_detail.total_price ELSE 0 END) AS doanh_thu_thang_1,
                 SUM(CASE WHEN MONTH(order.order_date) = 2 THEN order_detail.total_price ELSE 0 END) AS doanh_thu_thang_2,
                 SUM(CASE WHEN MONTH(order.order_date) = 3 THEN order_detail.total_price ELSE 0 END) AS doanh_thu_thang_3,
@@ -49,17 +58,18 @@ class SupplierController extends Controller
         
         $sumbill = Order::whereHas('order_details.product', function ($query) {
             $query->where('user_id', Auth::id());
-        })->where('status', 3)
-          ->count();
+        })->whereBetween('order_date', [$StartDate, $EndDate])
+            ->where('status', 2)
+            ->count();
         
         $sumproduct = OrderDetail::whereHas('product', function ($query) {
             $query->where('user_id', Auth::id());
-        })->whereHas('order', function ($query) {
-            $query->where('status', 3);
+        })->whereHas('order', function ($query) use ($StartDate, $EndDate) {
+            $query->whereBetween('order_date', [$StartDate, $EndDate])->where('status', 2);
         })->sum('quantity');
 
         
-        return view('supplier.dashboard', compact('revenue', 'sumbill', 'sumproduct'));
+        return view('supplier.dashboard', compact('revenue','doanh_thu', 'sumbill', 'sumproduct', 'StartDate', 'EndDate'));
     }
     public function dkapply(Request $request) {
         if (Apply::where('user_id', Auth::id())->exists()) {
@@ -203,5 +213,67 @@ class SupplierController extends Controller
         }
 
         return redirect('/supplier/bills')->with('success', 'Đơn hàng đã được gửi đi!');
+    }
+    public function export_products()
+    {
+        $products = Product::with('product_group')->where('user_id', Auth::id())->orderBy('id', 'desc')->get();
+        $headings = ['ID', 'Tên sản phẩm', 'Nhóm sản phẩm', 'Giá', 'Giá cũ', 'Số lượng tồn'];
+        $data = $products->map(function($product) {
+            return [
+                $product->id,
+                $product->product_name,
+                $product->product_group->group_name ?? '',
+                $product->unit_price,
+                $product->old_unit_price,
+                $product->quantity,
+            ];
+        })->toArray();
+        return Excel::download(new CustomExport($data, $headings), 'products.xlsx');
+    }
+    public function export_oder()
+    {
+       $orders = Order::whereHas('order_details.product', function ($query) {
+            $query->where('user_id', Auth::id());
+            })
+            ->with(['user', 'order_details.product'])
+            ->orderBy('id', 'desc')
+            ->get();
+
+        $orderdetails = OrderDetail::with('product')
+            ->whereHas('product', function ($query) {
+                $query->where('user_id', Auth::id());
+            })
+            ->get();
+
+        $headings1 = ['ID', 'Người mua', 'Người đặt', 'Địa chỉ', 'Phone', 'Ngày đặt', 'Trạng thái'];
+        $data1 = $orders->map(function($order) {
+            $statusText = match($order->status) {
+                0 => 'Chưa thanh toán',
+                1 => 'Đã thanh toán',
+                2 => 'Đơn hàng đã giao',
+                default => 'Đơn hàng đã bị hủy',
+            };
+            return [
+                $order->id,
+                $order->name,
+                $order->user->username,
+                $order->address,
+                $order->phone,
+                $order->order_date,
+                $statusText,
+            ];
+        })->toArray();
+
+        $headings2 = ['Mã đơn hàng', 'Tên sản phẩm', 'Số lượng', 'Đơn Giá', 'Tổng tiền'];
+        $data2 = $orderdetails->map(function($orderdetail) {
+            return [
+                $orderdetail->order_id,
+                $orderdetail->product->product_name,
+                $orderdetail->unit_price,
+                $orderdetail->quantity,
+                $orderdetail->total_price,
+            ];
+        })->toArray();
+         return Excel::download(new OrderMultiSheetExport($data1, $headings1, $data2, $headings2), 'orders.xlsx');
     }
 }

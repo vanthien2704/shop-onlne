@@ -138,7 +138,7 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Tài khoản:</h6>
                         <a class="collapse-item" href="{{ url('/admin/account') }}">Danh sách tài khoản</a>
-                        <!-- <a class="collapse-item" href="themtaikhoan.php">Thêm tài khoản</a>            -->
+                        <a class="collapse-item" href="{{ url('/admin/supplier') }}">Ứng tuyển supplier</a>
                         <!-- <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
                         <div class="collapse-divider"></div>
                         <h6 class="collapse-header">Other Pages:</h6>
