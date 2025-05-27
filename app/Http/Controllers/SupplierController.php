@@ -204,13 +204,13 @@ class SupplierController extends Controller
 
     public function sendbill($id)
     {
-        $detailbill = OrderDetail::where('order_id', $id)->get();
+        // $detailbill = OrderDetail::where('order_id', $id)->get();
 
         Order::where('id', $id)->update(['status' => 2]);
 
-        foreach ($detailbill as $product) {
-            Product::where('id', $product->product_id)->decrement('quantity', $product->quantity);
-        }
+        // foreach ($detailbill as $product) {
+        //     Product::where('id', $product->product_id)->decrement('quantity', $product->quantity);
+        // }
 
         return redirect('/supplier/bills')->with('success', 'Đơn hàng đã được gửi đi!');
     }

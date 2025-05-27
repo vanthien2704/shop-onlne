@@ -14,6 +14,16 @@ class PayController extends Controller
 {
     public function payment(Request $request)
     {
+        $cart = session()->get('cart', []);
+
+        foreach ($cart as $key => $product) {
+            $productInDb = Product::find($key);
+
+            if (!$productInDb || $productInDb->quantity < $product['quantity']) {
+                return redirect()->back()->with('error', 'Sản phẩm ' . $productInDb->product_name . ' không đủ hàng!');
+            }
+        }
+
         $bill = new Order();
         $bill->user_id = Auth::id();
         $bill->name = $request->input('hoten');
@@ -25,8 +35,6 @@ class PayController extends Controller
         $bill->payment = $request->input('payment');
         $bill->save();
 
-        $cart = session()->get('cart', []);
-
         foreach ($cart as $key => $product) {
             $cartItem = new OrderDetail();
             $cartItem->order_id = $bill->id;
@@ -35,6 +43,7 @@ class PayController extends Controller
             $cartItem->unit_price = $product['unit_price'];
             $cartItem->total_price = $product['total_price'];
             $cartItem->save();
+            Product::where('id', $key)->decrement('quantity', $product['quantity']);
         }
 
         session()->forget('cart');
@@ -79,9 +88,23 @@ class PayController extends Controller
             return redirect('/orders')->with('success', 'Đặt hàng thành công!');
         }elseif ($request->input('cancel')) {
             Order::where('id', $id)->update(['status' => 3]);
+
+            $detailbill = OrderDetail::where('order_id', $id)->get();
+
+            foreach ($detailbill as $product) {
+                Product::where('id', $product->product_id)->increment('quantity', $product->quantity);
+            }
+
             return redirect('/orders')->with('error', 'Đã hủy thanh toán!');
         }else{
             Order::where('id', $id)->update(['status' => 3]);
+
+            $detailbill = OrderDetail::where('order_id', $id)->get();
+
+            foreach ($detailbill as $product) {
+                Product::where('id', $product->product_id)->increment('quantity', $product->quantity);
+            }
+            
             return redirect('/cart')->with('error', 'Đặt hàng không thành công!');
         }
     }
